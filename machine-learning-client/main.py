@@ -1,3 +1,7 @@
+"""Flask API to predict ASL letters from image using trained model."""
+
+# pylint: disable=import-error, no-name-in-module
+
 from flask import Flask, request, jsonify
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
@@ -5,12 +9,11 @@ from PIL import Image
 import numpy as np
 
 # Load trained model
-MODEL_PATH = "sign_model.h5" 
+MODEL_PATH = "sign_model.h5"
 model = load_model(MODEL_PATH)
 LABELS = sorted([
     "A", "B", "C", "D", "del", "E", "F", "G", "H", "I", "J", "K", "L",
-    "M", "N", "nothing", "O", "P", "Q", "R", "S", "space", "T", "U",
-    "V", "W", "X", "Y", "Z"
+    "M", "N", "nothing", "O", "P", "Q", "R", "S", "space", "T", "U", "V", "W", "X", "Y", "Z"
 ])
 
 # Initialize Flask app
@@ -18,7 +21,7 @@ app = Flask(__name__)
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    """Accepts an image file and returns predicted digit."""
+    """Accepts an image file and returns predicted ASL letter."""
     if "file" not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
 
@@ -36,8 +39,8 @@ def predict():
 
         return jsonify({"prediction": predicted_label, "confidence": confidence})
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    except (IOError, ValueError) as err:
+        return jsonify({"error": str(err)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5001)
