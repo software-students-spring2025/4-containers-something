@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mongodb:
     image: mongo
@@ -13,17 +11,23 @@ services:
     build: ./web-app
     container_name: web-app
     ports:
-      - "5000:5000"
+      - "5000:5000" # Web Flask runs on port 5000
     environment:
       - FLASK_ENV=development
     depends_on:
       - mongodb
+    volumes:
+      - ./web-app:/app
 
   ml-client:
     build: ./machine-learning-client
     container_name: ml-client
+    ports:
+      - "5001:5001" # Expose ML API to localhost:5001
     depends_on:
       - mongodb
+    volumes:
+      - ./machine-learning-client:/app
 
 volumes:
   mongo_data:
