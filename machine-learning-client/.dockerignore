@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *.log
 
-# Ignore big files you don’t need inside the image
+# Ignore big files
 sign_model.h5
 dataset/
 *.zip
