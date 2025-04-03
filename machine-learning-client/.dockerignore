@@ -1,0 +1,13 @@
+# Ignore virtualenv & cache
+__pycache__/
+*.py[cod]
+*.log
+
+# Ignore big files you don’t need inside the image
+sign_model.h5
+dataset/
+*.zip
+
+# Git stuff
+.git
+.gitignore

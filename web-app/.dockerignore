@@ -1,0 +1,12 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.log
+
+# Editor junk
+.vscode/
+.DS_Store
+
+# Git stuff
+.git
+.gitignore
