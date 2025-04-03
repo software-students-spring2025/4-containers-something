@@ -3,7 +3,7 @@ from datetime import datetime
 from pymongo import MongoClient
 
 #connect to mongodb running on localhost (from docker)
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient("mongodb://mongodb:27017/")
 db = client["ml_database"]
 collection = db["sensor_data"]
 
