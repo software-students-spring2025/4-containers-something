@@ -14,10 +14,12 @@ client = MongoClient("mongodb://mongodb:27017/")
 db = client["ml_database"]
 collection = db["sensor_data"]
 
+
 @app.route("/")
 def home():
     """Render the home page (index.html)."""
     return render_template("index.html")
+
 
 @app.route("/data")
 def get_data():
@@ -27,6 +29,7 @@ def get_data():
         latest["_id"] = str(latest["_id"])
     return jsonify(latest or {"message": "No data found."})
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     # Start the Flask development server
     app.run(debug=True, host="0.0.0.0", port=5001)
