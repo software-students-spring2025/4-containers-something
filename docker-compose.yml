@@ -26,8 +26,6 @@ services:
       - "5001:5001" # Expose ML API to localhost:5001
     depends_on:
       - mongodb
-    volumes:
-      - ./machine-learning-client:/app
 
 volumes:
   mongo_data:

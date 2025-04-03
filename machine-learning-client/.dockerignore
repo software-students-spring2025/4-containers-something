@@ -1,13 +1,15 @@
-# Ignore virtualenv & cache
+# Ignore virtualenv & Python cache
 __pycache__/
 *.py[cod]
 *.log
 
-# Ignore big files
+# Ignore big files not needed for image
 sign_model.h5
 dataset/
 *.zip
 
-# Git stuff
+# Git and editor junk
 .git
 .gitignore
+.DS_Store
+.vscode/
