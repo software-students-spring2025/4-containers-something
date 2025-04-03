@@ -2,6 +2,7 @@
 Machine Learning Client Script
 This module simulates sensor data collection, processes it, and stores it in MongoDB.
 """
+
 from datetime import datetime
 from pymongo import MongoClient
 
