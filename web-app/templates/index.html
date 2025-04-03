@@ -1,11 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Placeholder </title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Language Recognition</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 </head>
 <body>
-  <h1>Placeholder text</h1>
-  <p>This is the index.html placeholder.</p>
+  <header>
+    <h1>ASL Letter Recognition</h1>
+    <p>Upload an image of a hand sign to predict the letter</p>
+  </header>
+
+  <div class="upload-box">
+    <form id="uploadForm" enctype="multipart/form-data">
+      <input type="file" name="file" accept="image/*" required />
+      <button type="submit">Predict</button>
+    </form>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById("uploadForm");
+    const resultDiv = document.getElementById("result");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      const response = await fetch("http://localhost:5001/predict", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+      if (data.prediction) {
+        resultDiv.innerText = `Prediction: ${data.prediction} (Confidence: ${Math.round(data.confidence * 100)}%)`;
+      } else {
+        resultDiv.innerText = `Error: ${data.error}`;
+      }
+    });
+  </script>
 </body>
 </html>

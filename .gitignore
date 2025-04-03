@@ -151,3 +151,11 @@ cython_debug/
 # Python tooling
 .pylintrc
 .pytest_cache/
+
+# dataset
+machine-learning-client/dataset/
+*.zip
+__pycache__/
+*.pyc
+.DS_Store
+

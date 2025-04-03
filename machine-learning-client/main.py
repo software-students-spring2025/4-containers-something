@@ -1,39 +1,77 @@
-"""
-Machine Learning Client Script
-This module simulates sensor data collection, processes it, and stores it in MongoDB.
-"""
+"""Flask API to predict ASL letters from image using trained model."""
 
-from datetime import datetime
-from pymongo import MongoClient
+# pylint: disable=import-error, no-name-in-module
 
-# Connect to MongoDB (Docker container running on the same network)
-client = MongoClient("mongodb://mongodb:27017/")
-db = client["ml_database"]
-collection = db["sensor_data"]
+from flask import Flask, request, jsonify
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+from PIL import Image
+import numpy as np
+
+# Load trained model
+MODEL_PATH = "sign_model.h5"
+model = load_model(MODEL_PATH)
+LABELS = sorted(
+    [
+        "A",
+        "B",
+        "C",
+        "D",
+        "del",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "nothing",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "space",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+    ]
+)
+
+# Initialize Flask app
+app = Flask(__name__)
 
 
-def collect_data():
-    """Simulates data collection from a sensor."""
-    return {
-        "sensor_type": "placeholder",
-        "value": 0,
-        "timestamp": datetime.utcnow(),
-    }
+@app.route("/predict", methods=["POST"])
+def predict():
+    """Accepts an image file and returns predicted ASL letter."""
+    if "file" not in request.files:
+        return jsonify({"error": "No file uploaded"}), 400
 
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"error": "Empty filename"}), 400
 
-def analyze_data(data):
-    """Processes and analyzes raw sensor data."""
-    data["analysis"] = "none"
-    return data
+    try:
+        img = Image.open(file).resize((100, 100)).convert("RGB")
+        img_array = image.img_to_array(img) / 255.0
+        img_array = np.expand_dims(img_array, axis=0)
+        prediction = model.predict(img_array)
+        predicted_label = LABELS[np.argmax(prediction)]
+        confidence = float(np.max(prediction))
 
+        return jsonify({"prediction": predicted_label, "confidence": confidence})
 
-def save_to_database(document):
-    """Inserts the document into the MongoDB collection."""
-    result = collection.insert_one(document)
-    print(f"Saved document with _id: {result.inserted_id}")
+    except (IOError, ValueError) as err:
+        return jsonify({"error": str(err)}), 500
 
 
 if __name__ == "__main__":
-    raw_data = collect_data()
-    processed_data = analyze_data(raw_data)
-    save_to_database(processed_data)
+    app.run(debug=True, host="0.0.0.0", port=5001)
