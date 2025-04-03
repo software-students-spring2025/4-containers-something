@@ -35,7 +35,9 @@ val_data = datagen.flow_from_directory(
 # Build model
 model = Sequential(
     [
-        Conv2D(32, (3, 3), activation="relu", input_shape=(img_size[0], img_size[1], 3)),
+        Conv2D(
+            32, (3, 3), activation="relu", input_shape=(img_size[0], img_size[1], 3)
+        ),
         MaxPooling2D(2, 2),
         Conv2D(64, (3, 3), activation="relu"),
         MaxPooling2D(2, 2),
