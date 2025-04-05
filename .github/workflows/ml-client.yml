@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.10", "3.11"]
         # repeat same job for each subsystem in the following subdirectories
         subdir: [machine-learning-client]
     steps:
@@ -20,7 +20,7 @@ jobs:
         run: |
           cd machine-learning-client
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install -r requirements.txt
           python -m pip install pylint black  # Install pylint and black
 
       - name: Lint with pylint
