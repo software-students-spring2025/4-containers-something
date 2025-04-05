@@ -25,4 +25,4 @@ docker run --env-file .env ml-Client
 ```
 
 ## Environment Variables
-- MONGO_URI — MongoDB connection string (e.g., mongodb://mongodb:27017/ml_database)
+- MONGO_URI - mongodb+srv://something:<TeamSomethingContainerized>@containerized.jlgfxb3.mongodb.net/
