@@ -7,7 +7,7 @@
 
 # Containerized App Exercise
 
-This app is a comprehensive fitness tracker that empowers users at all fitness levels to create personalized workout plans, log exercise details.  The user can speak with the app, which can recognize the user's speech and then search for exercises or edit exercises logs based on the spoken input. 
+This app is an interactive app that translates ASL into the alphabet. Users can sign letters through their web camera, which will be translated into the English alphabet. 
 
 ## Prerequisites
 Install the following software on your machine:
@@ -19,3 +19,9 @@ Install the following software on your machine:
 1. Go to the [Docker website](https://www.docker.com/products/docker-desktop) and download Docker Desktop for your operating system.
 2. Follow the installation instructions and make sure Docker Desktop is running.
 
+## Contributors
+
+- [Jennifer Yu](https://github.com/jenniferyuuu)
+- [Iva Park](https://github.com/ivapark)
+- [Chrisim Kim](https://github.com/ChrisimKim)
+- [Claire Kim](https://github.com/radishsoups)
