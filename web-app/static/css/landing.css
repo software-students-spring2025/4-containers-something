@@ -1,52 +1,90 @@
 body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem;
-  }
-  
-  header {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  
-  h1 {
-    font-size: 2.5rem;
-    color: #4a90e2;
-  }
-  
-  .upload-box {
-    background: white;
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    max-width: 400px;
-    width: 100%;
-  }
-  
-  input[type="file"] {
-    display: block;
-    margin: 1rem auto;
-  }
-  
-  button {
-    background-color: #4a90e2;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    color: white;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  
-  .result {
-    margin-top: 1.5rem;
-    font-size: 1.2rem;
-    font-weight: 600;
-  }
-  
+  font-family: 'Jura', sans-serif;
+  background-color: #f5f6fb;
+  margin: 0;
+  padding: 0;
+  color: #222;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  font-weight: 600;
+}
+
+.hero-img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  opacity: 0.7; /* 70% visible, 30% faded */
+  transition: opacity 0.3s ease;
+}
+
+.intro-section {
+  text-align: center;
+  padding: 2rem;
+}
+
+.intro-text h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.intro-text p {
+  font-size: 1rem;
+  max-width: 600px;
+  margin: 0 auto 1rem;
+}
+
+.try-btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: black;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+.live-detector {
+  text-align: center;
+  padding: 2rem;
+}
+
+.camera-box {
+  width: 640px;
+  height: 480px;
+  background: black;
+  margin: 0 auto;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+#video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.current-sign {
+  font-size: 1.2rem;
+  margin-top: 1rem;
+}
+
+table {
+  width: 60%;
+  margin: 2rem auto;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #ccc;
+}
+
+th {
+  background: #eee;
+  font-weight: 600;
+}
