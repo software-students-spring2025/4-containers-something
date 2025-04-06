@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "da315e5205f0143bb264f0c687a4d8570c21c91777320f479bd772aeb5d3b04d"
+            "sha256": "d270567193d70c6c70429cca57d376885c77c3362ea078a23efe76727a26e955"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -84,6 +84,13 @@
             ],
             "markers": "python_version >= '3.9'",
             "version": "==2.7.0"
+        },
+        "dotenv": {
+            "hashes": [
+                "sha256:29cf74a087b31dafdb5a446b6d7e11cbce8ed2741540e2339c69fbef92c94ce9"
+            ],
+            "index": "pypi",
+            "version": "==0.9.9"
         },
         "flask": {
             "hashes": [
@@ -384,6 +391,14 @@
             "index": "pypi",
             "markers": "python_version >= '3.8'",
             "version": "==8.3.5"
+        },
+        "python-dotenv": {
+            "hashes": [
+                "sha256:41f90bc6f5f177fb41f53e87666db362025010eb28f60a01c9143bfa33a2b2d5",
+                "sha256:d7c01d9e2293916c18baf562d95698754b0dbbb5e74d457c45d4f6561fb9d55d"
+            ],
+            "markers": "python_version >= '3.9'",
+            "version": "==1.1.0"
         },
         "tomli": {
             "hashes": [

@@ -6,18 +6,37 @@ the latest data collected and analyzed by the ML client.
 
 from flask import Flask, jsonify, render_template
 from pymongo import MongoClient
+import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
+# Load env variables
+load_dotenv()
+
+username = os.getenv("MONGO_INITDB_ROOT_USERNAME")
+password = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
+
 # Connect to MongoDB (inside a container named "mongodb")
-client = MongoClient("mongodb://mongodb:27017/")
+client = MongoClient("mongodb://{username}:{password}@mongodb:27017/")
 db = client["ml_database"]
 collection = db["sensor_data"]
+
+# testing DB connection
+try:
+    client.admin.command('ping')  # Check if the MongoDB server is responsive
+    print("Connected to MongoDB!")
+    print("Collections in database:", db.list_collection_names())
+
+except Exception as e:
+    print(f"ORANGES Failed to connect to MongoDB: {e}")
+# collection.insert_one({"name": "Test", "sentence": "HELLO WORLD WAHOO"})
 
 
 @app.route("/")
 def home():
     """Render the home page (index.html)."""
+
     return render_template("index.html")
 
 
