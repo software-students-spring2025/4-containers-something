@@ -40,37 +40,21 @@
     <table>
       <thead>
         <tr>
-          <th><img src="{{ url_for('static', filename='img/time.svg') }}" alt="Time Icon" width="20" /> Time</th>
-          <th><img src="{{ url_for('static', filename='img/hand.svg') }}" alt="Sign Icon" width="20" /> Sign</th>
-          <th><img src="{{ url_for('static', filename='img/percent.svg') }}" alt="Confidence Icon" width="20" /> Model Confidence</th>
+          <th>Time</th>
+          <th>Sign</th>
+          <th>Confidence</th>
         </tr>
       </thead>
-      
-      <tbody id="sign-history">
-        <tr>
-          <td>2025-04-03 13:45:00</td>
-          <td>A</td>
-          <td>87%</td>
-        </tr>
-        <tr>
-          <td>2025-04-03 13:44:30</td>
-          <td>D</td>
-          <td>87%</td>
-        </tr>
-        <tr>
-          <td>2025-04-03 13:43:30</td>
-          <td>G</td>
-          <td>87%</td>
-        </tr>
-      </tbody>
-      
+      <tbody id="sign-history"></tbody>
     </table>
   </section>
 
-  <!-- Camera script -->
+  <!-- Camera and Prediction Script -->
   <script>
-    const video = document.getElementById('video');
-
+    const video = document.getElementById("video");
+    const currentSign = document.getElementById("current-sign");
+  
+    // Access the user's webcam
     async function startCamera() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -80,8 +64,43 @@
         alert("Unable to access the camera. Please allow camera permissions.");
       }
     }
-
-    window.onload = startCamera;
+  
+    // Capture a frame and send it to the backend for prediction
+    async function predictSign() {
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  
+      // Convert the captured frame to a base64 string
+      const imageData = canvas.toDataURL("image/jpeg");
+  
+      try {
+        // Send the base64 image to the backend
+        const response = await fetch("http://127.0.0.1:5001/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: imageData }),
+        });
+  
+        const data = await response.json();
+        if (data.prediction) {
+          currentSign.textContent = `You are signing: ${data.prediction}`;
+        } else {
+          currentSign.textContent = "Error detecting sign.";
+        }
+      } catch (err) {
+        console.error("Prediction error:", err);
+        currentSign.textContent = "Error connecting to server.";
+      }
+    }
+  
+    // Start the camera and call predictSign every second
+    window.onload = () => {
+      startCamera();
+      setInterval(predictSign, 1000);
+    };
   </script>
 </body>
 </html>
