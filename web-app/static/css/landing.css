@@ -120,8 +120,101 @@ th, td {
   border-bottom: 1px solid #ccc;
 }
 
+th img {
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
 th {
-  background: #eee;
+  background: #ECECF2;
   font-weight: 600;
 }
+
+
+/* Tablets (768px and below) */
+@media screen and (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    font-size: 20px;
+  }
+
+  .intro-text {
+    margin-left: 2rem;
+    margin-right: 2rem;
+    text-align: center;
+  }
+
+  .intro-text h1 {
+    font-size: 36px;
+  }
+
+  .intro-text p {
+    font-size: 20px;
+  }
+
+  .camera-box {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4/3;
+  }
+
+  table {
+    width: 90%;
+    font-size: 14px;
+  }
+
+  th, td {
+    padding: 0.5rem;
+  }
+
+  .current-sign {
+    font-size: 28px;
+    margin-top: 40px;
+    margin-bottom: 60px;
+  }
+}
+
+/* Phones (480px and below) */
+@media screen and (max-width: 480px) {
+  .intro-text h1 {
+    font-size: 28px;
+  }
+
+  .intro-text p {
+    font-size: 16px;
+  }
+
+  .try-btn {
+    font-size: 18px;
+  }
+
+  .camera-box {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4/3;
+  }
+
+  table {
+    font-size: 12px;
+    width: 95%;
+  }
+
+  .current-sign {
+    font-size: 22px;
+    margin-top: 30px;
+    margin-bottom: 50px;
+  }
+
+  th img {
+    width: 16px;
+  }
+
+  nav {
+    font-size: 18px;
+    gap: 0.5rem;
+  }
+}
+
 
