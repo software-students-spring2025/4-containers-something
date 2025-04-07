@@ -1,3 +1,7 @@
+"""
+This script encodes an image file into a base64 string.
+"""
+
 import base64
 
 # Replace 'test_image.jpg' with the path to your image file

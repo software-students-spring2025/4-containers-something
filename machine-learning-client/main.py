@@ -17,7 +17,7 @@ CORS(app)
 
 logging.basicConfig(level=logging.DEBUG)
 
-model = tf.keras.models.load_model("sign_model.h5") 
+model = tf.keras.models.load_model("sign_model.h5")  # pylint: disable=no-member
 
 LABELS = [
     "A",
@@ -88,7 +88,7 @@ def predict():
     except IOError as e:
         logging.error("IOError during image processing: %s", e)
         return jsonify({"error": "Error processing the image"}), 500
-    except Exception as e:  
+    except Exception as e:  # pylint: disable=broad-exception-caught
         logging.error("Unexpected error during prediction: %s", e)
         return jsonify({"error": "An unexpected error occurred"}), 500
 
