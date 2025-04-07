@@ -12,17 +12,13 @@ import numpy as np
 import tensorflow as tf
 from flask_cors import CORS
 
-# Initialize Flask app and enable CORS
 app = Flask(__name__)
 CORS(app)
 
-# Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
-# Load the pre-trained TensorFlow model
-model = tf.keras.models.load_model("sign_model.h5")  # pylint: disable=no-member
+model = tf.keras.models.load_model("sign_model.h5") 
 
-# Define the labels for ASL letters
 LABELS = [
     "A",
     "B",
@@ -70,12 +66,12 @@ def predict():
         return jsonify({"error": "No image provided"}), 400
 
     try:
-        # Decode the base64 image
+        # decode the base64 image
         image_data = base64.b64decode(data["image"].split(",")[1])
         img = Image.open(BytesIO(image_data)).resize((100, 100)).convert("RGB")
         img_array = np.expand_dims(np.array(img) / 255.0, axis=0)
 
-        # Predict using the model
+        # predict using the model
         prediction = model.predict(img_array)
         predicted_label = LABELS[np.argmax(prediction)]
         confidence = float(np.max(prediction))
@@ -92,7 +88,7 @@ def predict():
     except IOError as e:
         logging.error("IOError during image processing: %s", e)
         return jsonify({"error": "Error processing the image"}), 500
-    except Exception as e:  # pylint: disable=broad-exception-caught
+    except Exception as e:  
         logging.error("Unexpected error during prediction: %s", e)
         return jsonify({"error": "An unexpected error occurred"}), 500
 
