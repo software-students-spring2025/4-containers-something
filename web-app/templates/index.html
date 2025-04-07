@@ -40,24 +40,30 @@
     <table>
       <thead>
         <tr>
-          <th>⏰ Time</th>
-          <th>🤟 Sign</th>
+          <th><img src="{{ url_for('static', filename='img/time.svg') }}" alt="Time Icon" width="20" /> Time</th>
+          <th><img src="{{ url_for('static', filename='img/hand.svg') }}" alt="Sign Icon" width="20" /> Sign</th>
+          <th><img src="{{ url_for('static', filename='img/percent.svg') }}" alt="Confidence Icon" width="20" /> Model Confidence</th>
         </tr>
       </thead>
+      
       <tbody id="sign-history">
         <tr>
           <td>2025-04-03 13:45:00</td>
           <td>A</td>
+          <td>87%</td>
         </tr>
         <tr>
           <td>2025-04-03 13:44:30</td>
           <td>D</td>
+          <td>87%</td>
         </tr>
         <tr>
           <td>2025-04-03 13:43:30</td>
           <td>G</td>
+          <td>87%</td>
         </tr>
       </tbody>
+      
     </table>
   </section>
 
