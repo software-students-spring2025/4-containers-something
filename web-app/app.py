@@ -43,5 +43,5 @@ def get_data():
 
 
 if __name__ == "__main__":
-    # Start the Flask development server
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    # start Flask development server
+    app.run(debug=True, host="0.0.0.0", port=5002)

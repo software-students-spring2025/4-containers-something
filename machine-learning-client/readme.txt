@@ -12,17 +12,32 @@ Its job is to collect raw data, analyze it, and store the results in a shared Mo
 ## How to Run 
 
 ### Run Locally:
+1. Navigate to the `machine-learning-client` directory:
    ```bash
    cd machine-learning-client
-   pipenv install
-   pipenv run python main.py
+   ```
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Train the model (if needed):
+   ```bash
+   python train_model.py
+   ```
+4. Start the ML client API:
+   ```bash
+   python main.py
    ```
 
 ### Run in Docker:
-```bash
-docker build -t ml-client .
-docker run --env-file .env ml-Client
-```
+1. Build the Docker image:
+   ```bash
+   docker build -t ml-client ./machine-learning-client
+   ```
+2. Run the container:
+   ```bash
+   docker run -p 5001:5001 ml-client
+   ```
 
 ## Environment Variables
-- MONGO_URI - mongodb+srv://something:<TeamSomethingContainerized>@containerized.jlgfxb3.mongodb.net/
+- **MONGO_URI**: MongoDB connection string (e.g., `mongodb://mongodb:27017/ml_database`)
