@@ -18,25 +18,18 @@ username = os.getenv("MONGO_INITDB_ROOT_USERNAME")
 password = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
 
 # Connect to MongoDB (inside a container named "mongodb")
-client = MongoClient("mongodb://{username}:{password}@mongodb:27017/")
+client = MongoClient(os.getenv("URI"))
 db = client["ml_database"]
 collection = db["sensor_data"]
-
-# testing DB connection
-try:
-    client.admin.command('ping')  # Check if the MongoDB server is responsive
-    print("Connected to MongoDB!")
-    print("Collections in database:", db.list_collection_names())
-
-except Exception as e:
-    print(f"ORANGES Failed to connect to MongoDB: {e}")
-# collection.insert_one({"name": "Test", "sentence": "HELLO WORLD WAHOO"})
 
 
 @app.route("/")
 def home():
     """Render the home page (index.html)."""
-
+    
+    # Test DB connection
+    # collection.insert_one({"name": "Test", "sentence": "HELLO WORLD WAHOO"})
+    
     return render_template("index.html")
 
 
@@ -51,4 +44,4 @@ def get_data():
 
 if __name__ == "__main__":
     # Start the Flask development server
-    app.run(debug=True, host="0.0.0.0", port=5001)
+    app.run(debug=True, host="0.0.0.0", port=5000)
