@@ -1,5 +1,5 @@
 """
-Unit testing for the web app
+Unit testing for the web app code
 """
 
 import pytest
