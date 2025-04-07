@@ -30,7 +30,9 @@ def test_home(client_fixture):
     assert b"Your Signing History" in response.data
 
 
-@patch("app.collection.find_one")   # mocks find_one method for the collection sensor_data
+@patch(
+    "app.collection.find_one"
+)  # mocks find_one method for the collection sensor_data
 def test_data_route_returned_data(mock_find_one, client_fixture):
     """
     Test the data route to ensure it returns the expected sensor data if there is stored data
@@ -39,7 +41,7 @@ def test_data_route_returned_data(mock_find_one, client_fixture):
         "_id": "61d6c1d7f1b1c314ce875f23",
         "timestamp": "2025-04-03 13:45:00",
         "sign": "A",
-        "confidence": 0.8
+        "confidence": 0.8,
     }
     mock_find_one.return_value = mock_data
     response = client_fixture.get("/data")
@@ -48,6 +50,7 @@ def test_data_route_returned_data(mock_find_one, client_fixture):
     assert b'"timestamp":"2025-04-03 13:45:00"' in response.data
     assert b'"sign":"A"' in response.data
     assert b'"confidence":0.8' in response.data
+
 
 @patch("app.collection.find_one")
 def test_data_route_no_data(mock_find_one, client_fixture):
