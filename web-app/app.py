@@ -9,7 +9,7 @@ from pymongo import MongoClient
 
 app = Flask(__name__)
 
-# Connect to MongoDB (inside a container named "mongodb")
+# connect to MongoDB
 client = MongoClient("mongodb://mongodb:27017/")
 db = client["ml_database"]
 collection = db["sensor_data"]
@@ -31,5 +31,5 @@ def get_data():
 
 
 if __name__ == "__main__":
-    # Start the Flask development server
-    app.run(debug=True, host="0.0.0.0", port=5001)
+    # start Flask development server
+    app.run(debug=True, host="0.0.0.0", port=5002)
