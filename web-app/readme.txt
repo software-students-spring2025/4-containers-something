@@ -28,4 +28,4 @@ This folder contains the Flask-based frontend of the application. It displays da
    ```
 
 ## Environment Variables
-- MONGO_URI: MongoDB connection string (e.g. mongodb://mongodb:27017/your-db)
+- **MONGO_URI**: MongoDB connection string (e.g., `mongodb://mongodb:27017/ml_database`)
