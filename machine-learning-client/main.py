@@ -1,77 +1,56 @@
-"""Flask API to predict ASL letters from image using trained model."""
-
-# pylint: disable=import-error, no-name-in-module
-
+import base64
+from io import BytesIO
 from flask import Flask, request, jsonify
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing import image
 from PIL import Image
 import numpy as np
+import tensorflow as tf
+from flask_cors import CORS
 
-# Load trained model
-MODEL_PATH = "sign_model.h5"
-model = load_model(MODEL_PATH)
-LABELS = sorted(
-    [
-        "A",
-        "B",
-        "C",
-        "D",
-        "del",
-        "E",
-        "F",
-        "G",
-        "H",
-        "I",
-        "J",
-        "K",
-        "L",
-        "M",
-        "N",
-        "nothing",
-        "O",
-        "P",
-        "Q",
-        "R",
-        "S",
-        "space",
-        "T",
-        "U",
-        "V",
-        "W",
-        "X",
-        "Y",
-        "Z",
-    ]
-)
-
-# Initialize Flask app
 app = Flask(__name__)
+CORS(app)
 
+model = tf.keras.models.load_model("sign_model.h5")
+
+LABELS = [
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
+    "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+]
+
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
+@app.route("/", methods=["GET"])
+def home():
+    """Default route for the root URL."""
+    return "Welcome to the ASL Prediction API!"
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    """Accepts an image file and returns predicted ASL letter."""
-    if "file" not in request.files:
-        return jsonify({"error": "No file uploaded"}), 400
-
-    file = request.files["file"]
-    if file.filename == "":
-        return jsonify({"error": "Empty filename"}), 400
+    """Accepts a base64-encoded image and returns predicted ASL letter."""
+    data = request.get_json()
+    logging.debug(f"Received data: {data.keys() if data else 'No data received'}")
+    
+    if "image" not in data:
+        logging.error("No image provided in the request.")
+        return jsonify({"error": "No image provided"}), 400
 
     try:
-        img = Image.open(file).resize((100, 100)).convert("RGB")
-        img_array = image.img_to_array(img) / 255.0
-        img_array = np.expand_dims(img_array, axis=0)
+        # decode the base64 image
+        image_data = base64.b64decode(data["image"].split(",")[1])
+        img = Image.open(BytesIO(image_data)).resize((100, 100)).convert("RGB")
+        img_array = np.expand_dims(np.array(img) / 255.0, axis=0)
+
+        # predict using the model
         prediction = model.predict(img_array)
         predicted_label = LABELS[np.argmax(prediction)]
         confidence = float(np.max(prediction))
 
+        logging.debug(f"Prediction: {predicted_label}, Confidence: {confidence}")
         return jsonify({"prediction": predicted_label, "confidence": confidence})
 
-    except (IOError, ValueError) as err:
-        return jsonify({"error": str(err)}), 500
-
+    except Exception as e:
+        logging.error(f"Error during prediction: {e}")
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5001)
