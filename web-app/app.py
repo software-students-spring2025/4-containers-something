@@ -3,10 +3,9 @@
 This Flask app connects to a MongoDB database and displays
 the latest data collected and analyzed by the ML client.
 """
-
+import os
 from flask import Flask, jsonify, render_template
 from pymongo import MongoClient
-import os
 from dotenv import load_dotenv
 
 app = Flask(__name__)
@@ -26,7 +25,7 @@ collection = db["sensor_data"]
 @app.route("/")
 def home():
     """Render the home page (index.html)."""
-    
+
     # Test DB connection
     # collection.insert_one({"name": "Test", "sentence": "HELLO WORLD WAHOO"})
     
