@@ -28,6 +28,8 @@ services:
       - mongodb
     volumes:
       - ./machine-learning-client:/app
+      - ./outside-folder/dataset:/app/dataset
+      - ./outside-folder/sign_model.h5:/app/sign_model.h5
 
 volumes:
   mongo_data:
