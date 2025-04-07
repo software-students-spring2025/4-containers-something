@@ -9,10 +9,8 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# Load the pre-trained model
 model = tf.keras.models.load_model("sign_model.h5")
 
-# Define the labels for the ASL alphabet
 LABELS = [
     "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
     "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
@@ -37,12 +35,12 @@ def predict():
         return jsonify({"error": "No image provided"}), 400
 
     try:
-        # Decode the base64 image
+        # decode the base64 image
         image_data = base64.b64decode(data["image"].split(",")[1])
         img = Image.open(BytesIO(image_data)).resize((100, 100)).convert("RGB")
         img_array = np.expand_dims(np.array(img) / 255.0, axis=0)
 
-        # Predict using the model
+        # predict using the model
         prediction = model.predict(img_array)
         predicted_label = LABELS[np.argmax(prediction)]
         confidence = float(np.max(prediction))

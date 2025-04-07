@@ -49,12 +49,12 @@
     </table>
   </section>
 
-  <!-- Camera and Prediction Script -->
+  <!-- camera and prediction Script -->
   <script>
     const video = document.getElementById("video");
     const currentSign = document.getElementById("current-sign");
   
-    // Access the user's webcam
+    // access the user's webcam
     async function startCamera() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -65,7 +65,7 @@
       }
     }
   
-    // Capture a frame and send it to the backend for prediction
+    // capture a frame and send it to the backend for prediction
     async function predictSign() {
       const canvas = document.createElement("canvas");
       canvas.width = video.videoWidth;
@@ -73,11 +73,11 @@
       const ctx = canvas.getContext("2d");
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
   
-      // Convert the captured frame to a base64 string
+      // convert the captured frame to a base64 string
       const imageData = canvas.toDataURL("image/jpeg");
   
       try {
-        // Send the base64 image to the backend
+        // send the base64 image to the backend
         const response = await fetch("http://127.0.0.1:5001/predict", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
