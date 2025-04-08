@@ -3,6 +3,7 @@
 This Flask app connects to a MongoDB database and displays
 the latest data collected and analyzed by the ML client.
 """
+
 import os
 from flask import Flask, jsonify, render_template
 from pymongo import MongoClient
