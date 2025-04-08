@@ -6,6 +6,10 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
 
   web:
     build: ./web-app
@@ -18,6 +22,8 @@ services:
       - mongodb
     volumes:
       - ./web-app:/app
+    env_file:
+      - .env
 
   ml-client:
     build: ./machine-learning-client
