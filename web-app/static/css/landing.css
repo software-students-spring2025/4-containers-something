@@ -104,6 +104,32 @@ nav a:hover {
   transform: scaleX(-1);
 }
 
+#capture-btn {
+  font-size: 15px;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #007bff; 
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#capture-btn:hover {
+  background-color: #0056b3; 
+  transform: scale(1.05);
+}
+
+#capture-btn:active {
+  background-color: #003f7f; 
+  transform: scale(0.95); 
+}
+
 .current-sign {
   font-size: 36px;
   margin-top: 50px;
