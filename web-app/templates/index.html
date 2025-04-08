@@ -56,7 +56,7 @@
   <script>
     const video = document.getElementById("video");
     const currentSign = document.getElementById("current-sign");
-  
+
     // access the user's webcam
     async function startCamera() {
       try {
@@ -67,7 +67,7 @@
         alert("Unable to access the camera. Please allow camera permissions.");
       }
     }
-  
+
     // capture a frame and send it to the backend for prediction
     async function predictSign() {
       const canvas = document.createElement("canvas");
@@ -75,10 +75,10 @@
       canvas.height = video.videoHeight;
       const ctx = canvas.getContext("2d");
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  
+
       // convert the captured frame to a base64 string
       const imageData = canvas.toDataURL("image/jpeg");
-  
+
       try {
         // send the base64 image to the backend
         const response = await fetch("http://127.0.0.1:5001/predict", {
@@ -86,7 +86,7 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ image: imageData }),
         });
-  
+
         const data = await response.json();
         if (data.prediction) {
           currentSign.textContent = `You are signing: ${data.prediction}`;
@@ -98,7 +98,7 @@
         currentSign.textContent = "Error connecting to server.";
       }
     }
-  
+
     // start the camera and call predictSign every second
     window.onload = () => {
       startCamera();
@@ -106,4 +106,5 @@
     };
   </script>
 </body>
+
 </html>

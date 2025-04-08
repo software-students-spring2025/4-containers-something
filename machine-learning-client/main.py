@@ -94,8 +94,8 @@ def predict():
         # collection.insert_one({"name": "Test", "sentence": "HELLO WORLD WAHOO"})
 
         logging.debug("Prediction: %s, Confidence: %f", predicted_label, confidence)
-        return jsonify({"prediction": predicted_label, "confidence": confidence})
 
+        return jsonify({"prediction": predicted_label, "confidence": confidence})
     except ValueError as e:
         logging.error("ValueError during prediction: %s", e)
         return jsonify({"error": str(e)}), 500
