@@ -4,13 +4,21 @@ This Flask app connects to a MongoDB database and displays
 the latest data collected and analyzed by the ML client.
 """
 
+import os
 from flask import Flask, jsonify, render_template
 from pymongo import MongoClient
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
-# connect to MongoDB
-client = MongoClient("mongodb://mongodb:27017/")
+# Load env variables
+load_dotenv()
+
+username = os.getenv("MONGO_INITDB_ROOT_USERNAME")
+password = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
+
+# Connect to MongoDB (inside a container named "mongodb")
+client = MongoClient(os.getenv("URI"))
 db = client["ml_database"]
 collection = db["sensor_data"]
 
@@ -18,6 +26,10 @@ collection = db["sensor_data"]
 @app.route("/")
 def home():
     """Render the home page (index.html)."""
+
+    # Test DB connection
+    # collection.insert_one({"name": "Test", "sentence": "HELLO WORLD WAHOO"})
+
     return render_template("index.html")
 
 
