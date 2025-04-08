@@ -28,7 +28,7 @@ def home():
 
     # Test DB connection
     # collection.insert_one({"name": "Test", "sentence": "HELLO WORLD WAHOO"})
-    
+
     return render_template("index.html")
 
 
