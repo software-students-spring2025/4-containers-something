@@ -5,12 +5,15 @@ from base64-encoded images using a TensorFlow model.
 
 import logging
 import base64
+import os
 from io import BytesIO
 from flask import Flask, request, jsonify
 from PIL import Image
 import numpy as np
 import tensorflow as tf
 from flask_cors import CORS
+from pymongo import MongoClient
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 CORS(app)
@@ -18,6 +21,17 @@ CORS(app)
 logging.basicConfig(level=logging.DEBUG)
 
 model = tf.keras.models.load_model("sign_model.h5")  # pylint: disable=no-member
+
+# Load env variables
+load_dotenv()
+
+username = os.getenv("MONGO_INITDB_ROOT_USERNAME")
+password = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
+
+# Connect to MongoDB (inside a container named "mongodb")
+client = MongoClient(os.getenv("URI"))
+db = client["ml_database"]
+collection = db["sensor_data"]
 
 LABELS = [
     "A",
@@ -75,6 +89,9 @@ def predict():
         prediction = model.predict(img_array)
         predicted_label = LABELS[np.argmax(prediction)]
         confidence = float(np.max(prediction))
+
+        # Test DB connection
+        # collection.insert_one({"name": "Test", "sentence": "HELLO WORLD WAHOO"})
 
         logging.debug("Prediction: %s, Confidence: %f", predicted_label, confidence)
         return jsonify({"prediction": predicted_label, "confidence": confidence})
