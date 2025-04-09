@@ -35,5 +35,8 @@ services:
     volumes:
       - ./machine-learning-client:/app
       - ./outside-folder/dataset:/app/dataset
+    env_file:
+      - .env
+    
 volumes:
   mongo_data:
