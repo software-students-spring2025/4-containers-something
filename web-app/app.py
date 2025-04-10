@@ -77,9 +77,9 @@ def load_user(user_id):
     """For flask-login use"""
     user_data = users.find_one({"_id": ObjectId(user_id)})
     if user_data:
-        return User(user_id=user_data["_id"],
-                    username=user_data["username"],
-                    is_active=True)
+        return User(
+            user_id=user_data["_id"], username=user_data["username"], is_active=True
+        )
 
     return None
 
@@ -101,17 +101,14 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        user_data = users.find_one({
-            "username": username,
-            "password": password
-        })
+        user_data = users.find_one({"username": username, "password": password})
 
         if user_data:
             # check database for password
             # if check_password_hash(user_data["password"], password):
-            user_object = User(user_id=user_data["_id"],
-                               username=user_data["username"],
-                               is_active=True)
+            user_object = User(
+                user_id=user_data["_id"], username=user_data["username"], is_active=True
+            )
 
             session["user_id"] = str(user_data["_id"])
 
