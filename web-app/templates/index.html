@@ -54,7 +54,7 @@
       {% if latest %}
       {% for item in latest %}
       <tbody id="sign-history">
-        <td>{{ item.timestamp }}</td>
+        <td>{{ item.timestamp.strftime("%Y-%m-%d %H:%M:%S") }}</td>
         <td>{{ item.prediction }}</td>
         <td>{{ item.confidence }}</td>
       </tbody>
