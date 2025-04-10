@@ -33,6 +33,16 @@ def home():
     return render_template("index.html")
 
 
+@app.route("/login")
+def login():
+    """Render the home page (index.html)."""
+
+    # Test DB connection
+    # collection.insert_one({"name": "Test", "sentence": "HELLO WORLD WAHOO"})
+
+    return render_template("login.html")
+
+
 @app.route("/data")
 def get_data():
     """Return the most recent sensor data as JSON."""

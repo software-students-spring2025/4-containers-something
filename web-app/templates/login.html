@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ASL Alphabet Detector</title>
+
+    <!-- Jura Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+</head>
+
+<body>
+    <nav>
+        <div class="nav-left">Something</div>
+        <div class="nav-right"><a href="#detector">Try it</a></div>
+    </nav>
+
+    <header class="intro-section">
+        <img src="{{ url_for('static', filename='img/handai.svg') }}" alt="Human and Robot hands" class="hero-img" />
+        <div class="intro-text">
+            <h1>Sign Language Alphabet Detector</h1>
+            <p>
+                The system detects hand gestures used to sign individual letters of the alphabet in American Sign
+                Language
+                (ASL), allowing users to communicate letters using their hands.
+            </p>
+            <a href="#detector" class="try-btn">Try it →</a>
+        </div>
+    </header>
+
+    <section id="detector" class="live-detector">
+        <h2>Live Detector</h2>
+        <p>Sign a letter from the American Sign Language (ASL) alphabet in front of your camera.</p>
+
+        <div class="camera-box">
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas" style="display: none;"></canvas>
+        </div>
+
+        <button id="capture-btn" class="try-btn">Capture Image</button>
+        <p class="current-sign">You are signing: <span id="current-sign">None</span></p>
+
+
+        <label for="fname">First name:</label>
+        <input type="text" id="fname" name="fname">
+
+    </section>
+
+    <!-- Camera and Prediction Script -->
+    <script>
+        const video = document.getElementById("video");
+        const canvas = document.getElementById("canvas");
+        const captureBtn = document.getElementById("capture-btn");
+        const currentSign = document.getElementById("current-sign");
+        const signHistory = document.getElementById("sign-history");
+
+        // Access the user's webcam
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+            } catch (err) {
+                console.error("Error accessing camera: ", err);
+                alert("Unable to access the camera. Please allow camera permissions.");
+            }
+        }
+
+        // Capture an image and send it to the backend for prediction
+        captureBtn.addEventListener("click", async () => {
+            const ctx = canvas.getContext("2d");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            // Draw the current video frame onto the canvas
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Convert the canvas image to a base64 string
+            const imageData = canvas.toDataURL("image/jpeg");
+
+            try {
+                // Send the base64 image to the backend
+                const response = await fetch("http://127.0.0.1:5001/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ image: imageData }),
+                });
+
+                const data = await response.json();
+                if (data.prediction) {
+                    currentSign.textContent = data.prediction;
+
+                    const outputBox = document.getElementById("fname");
+                    outputBox.value += `${data.prediction}`;
+
+                } else {
+                    currentSign.textContent = "Error detecting sign.";
+                }
+            } catch (err) {
+                console.error("Prediction error:", err);
+                currentSign.textContent = "Error connecting to server.";
+            }
+        });
+
+        // Start the camera when the page loads
+        window.onload = startCamera;
+    </script>
+</body>
+
+</html>

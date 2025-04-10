@@ -70,11 +70,62 @@ def home():
     return "Welcome to the ASL Prediction API!"
 
 
+@app.route("/login", methods=["POST"])
+def login():
+    """Accepts a base64-encoded image and returns predicted ASL letter."""
+    data = request.get_json()
+    logging.debug("Received data: %s",
+                  data.keys() if data else "No data received")
+
+    if not data or "image" not in data:
+        logging.error("No image provided in the request.")
+        return jsonify({"error": "No image provided"}), 400
+
+    try:
+        # decode the base64 image
+        image_data = base64.b64decode(data["image"].split(",")[1])
+        img = Image.open(BytesIO(image_data)).resize((100, 100)).convert("RGB")
+        img_array = np.expand_dims(np.array(img) / 255.0, axis=0)
+
+        # predict using the model
+        prediction = model.predict(img_array)
+        predicted_label = LABELS[np.argmax(prediction)]
+        confidence = float(np.max(prediction))
+
+        # log the prediction to MongoDB
+        prediction_entry = {
+            "timestamp": datetime.utcnow(),
+            "prediction": predicted_label,
+            "confidence": confidence,
+        }
+
+        logging.debug("Prediction: %s, Confidence: %f", predicted_label,
+                      confidence)
+
+        return jsonify({
+            "prediction": predicted_label,
+            "confidence": confidence
+        })
+    except ValueError as e:
+        logging.error("ValueError during prediction: %s", e)
+        return jsonify({"error": str(e)}), 500
+    except KeyError as e:
+        logging.error("KeyError during prediction: %s", e)
+        return jsonify({"error": f"Missing key: {str(e)}"}), 400
+    except IOError as e:
+        logging.error("IOError during image processing: %s", e)
+        return jsonify({"error": "Error processing the image"}), 500
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        logging.error("Unexpected error during prediction: %s", e)
+        return jsonify({"error": "An unexpected error occurred"}), 500
+
+
 @app.route("/predict", methods=["POST"])
 def predict():
     """Accepts a base64-encoded image and returns predicted ASL letter."""
     data = request.get_json()
-    logging.debug("Received data: %s", data.keys() if data else "No data received")
+    logging.debug("Received data: %s",
+                  data.keys() if data else "No data received")
 
     if not data or "image" not in data:
         logging.error("No image provided in the request.")
@@ -99,9 +150,13 @@ def predict():
         }
         collection.insert_one(prediction_entry)
 
-        logging.debug("Prediction: %s, Confidence: %f", predicted_label, confidence)
+        logging.debug("Prediction: %s, Confidence: %f", predicted_label,
+                      confidence)
 
-        return jsonify({"prediction": predicted_label, "confidence": confidence})
+        return jsonify({
+            "prediction": predicted_label,
+            "confidence": confidence
+        })
     except ValueError as e:
         logging.error("ValueError during prediction: %s", e)
         return jsonify({"error": str(e)}), 500
