@@ -37,7 +37,7 @@
         <p>Please register with an username and password.</p>
 
         <div id="content">
-            <form action="/login" method="POST">
+            <form action="/register" method="POST">
                 <div class="form-group">
                     <input type="text" id="username" name="username" placeholder="Username" />
                 </div>
@@ -50,6 +50,15 @@
 
                 <div class="button-container">
                     <button type="submit" class="signup-button">Sign Up</button>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    <ul>
+                        {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% endwith %}
                 </div>
             </form>
 
