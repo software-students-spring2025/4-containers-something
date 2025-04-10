@@ -8,7 +8,6 @@ black = "*"
 pylint = "*"
 numpy = "*"
 flask = "*"
-flask-login = "*"
 pymongo = "*"
 pytest = "*"
 pytest-flask = "*"
@@ -16,6 +15,7 @@ coverage = "*"
 pytest-cov = "*"
 dotenv = "*"
 python-dotenv = "*"
+flask-login = "*"
 
 [dev-packages]
 
