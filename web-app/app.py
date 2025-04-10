@@ -141,6 +141,13 @@ def logout():
     flash("You have been logged out.", "info")
     return redirect(url_for("login"))
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    """Render the register page (register.html)"""
+    if request.method == "POST":
+        pass
+
+    return render_template("register.html")
 
 @app.route("/data")
 def get_data():

@@ -26,15 +26,11 @@ form {
     margin-top: 2em;
 }
 
-ul {
-    list-style-type: none;
-}
-
 #show-password {
     margin-top: 2em;
 }
 
-.login-button {
+.signup-button {
     background: #e6f0ff;
     color: #333;
     border: none;
@@ -46,20 +42,12 @@ ul {
     max-width: 150px;
 }
 
-.login-button:hover {
+.signup-button:hover {
     background: #d0e2ff;
 }
 
 .button-container {
     margin-top: 2em;
-}
-
-#sign-indicator {
-    font-size: 1em;
-}
-
-.link-group{
-    padding-top: 15px;
 }
 
 .account-text{
