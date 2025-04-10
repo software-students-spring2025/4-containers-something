@@ -68,6 +68,7 @@ class User(UserMixin):
         return self.is_authenticated
 
     def get_id(self):
+        """Returns current ID"""
         return self.id
 
 
