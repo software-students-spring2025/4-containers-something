@@ -74,8 +74,7 @@ def home():
 def login():
     """Accepts a base64-encoded image and returns predicted ASL letter."""
     data = request.get_json()
-    logging.debug("Received data: %s",
-                  data.keys() if data else "No data received")
+    logging.debug("Received data: %s", data.keys() if data else "No data received")
 
     if not data or "image" not in data:
         logging.error("No image provided in the request.")
@@ -92,20 +91,9 @@ def login():
         predicted_label = LABELS[np.argmax(prediction)]
         confidence = float(np.max(prediction))
 
-        # log the prediction to MongoDB
-        prediction_entry = {
-            "timestamp": datetime.utcnow(),
-            "prediction": predicted_label,
-            "confidence": confidence,
-        }
+        logging.debug("Prediction: %s, Confidence: %f", predicted_label, confidence)
 
-        logging.debug("Prediction: %s, Confidence: %f", predicted_label,
-                      confidence)
-
-        return jsonify({
-            "prediction": predicted_label,
-            "confidence": confidence
-        })
+        return jsonify({"prediction": predicted_label, "confidence": confidence})
     except ValueError as e:
         logging.error("ValueError during prediction: %s", e)
         return jsonify({"error": str(e)}), 500
@@ -124,8 +112,7 @@ def login():
 def predict():
     """Accepts a base64-encoded image and returns predicted ASL letter."""
     data = request.get_json()
-    logging.debug("Received data: %s",
-                  data.keys() if data else "No data received")
+    logging.debug("Received data: %s", data.keys() if data else "No data received")
 
     if not data or "image" not in data:
         logging.error("No image provided in the request.")
@@ -151,13 +138,9 @@ def predict():
         }
         collection.insert_one(prediction_entry)
 
-        logging.debug("Prediction: %s, Confidence: %f", predicted_label,
-                      confidence)
+        logging.debug("Prediction: %s, Confidence: %f", predicted_label, confidence)
 
-        return jsonify({
-            "prediction": predicted_label,
-            "confidence": confidence
-        })
+        return jsonify({"prediction": predicted_label, "confidence": confidence})
     except ValueError as e:
         logging.error("ValueError during prediction: %s", e)
         return jsonify({"error": str(e)}), 500
