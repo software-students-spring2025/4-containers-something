@@ -8,13 +8,13 @@ import base64
 import os
 from datetime import datetime
 from io import BytesIO
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify
 from PIL import Image
 import numpy as np
 import tensorflow as tf
 from flask_cors import CORS
 from pymongo import MongoClient
-from bson.objectid import ObjectId
+from bson import ObjectId
 from dotenv import load_dotenv
 
 app = Flask(__name__)
@@ -130,20 +130,28 @@ def predict():
         predicted_label = LABELS[np.argmax(prediction)]
         confidence = float(np.max(prediction))
 
-        user_id = ObjectId(session.get("user_id"))
+        user_id = data["user_id"]
 
-        # log the prediction to MongoDB
-        prediction_entry = {
-            "timestamp": datetime.utcnow(),
-            "prediction": predicted_label,
-            "confidence": confidence,
-            "user_id": user_id,
-        }
-        collection.insert_one(prediction_entry)
+        if user_id:
+            # log the prediction to MongoDB
+            prediction_entry = {
+                "timestamp": datetime.utcnow(),
+                "prediction": predicted_label,
+                "confidence": confidence,
+                "user_id": ObjectId(user_id),
+            }
+
+            collection.insert_one(prediction_entry)
 
         logging.debug("Prediction: %s, Confidence: %f", predicted_label, confidence)
 
-        return jsonify({"prediction": predicted_label, "confidence": confidence})
+        return jsonify(
+            {
+                "prediction": predicted_label,
+                "confidence": confidence,
+                "user_id": user_id,
+            }
+        )
     except ValueError as e:
         logging.error("ValueError during prediction: %s", e)
         return jsonify({"error": str(e)}), 500

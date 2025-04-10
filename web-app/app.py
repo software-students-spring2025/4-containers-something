@@ -99,7 +99,8 @@ def home():
         return render_template("index.html", latest=[])
 
     latest = collection.find({"user_id": user_id}, sort=[("_id", -1)])
-    return render_template("index.html", latest=latest)
+
+    return render_template("index.html", latest=latest, user_id=user_id)
 
 
 @app.route("/login", methods=["GET", "POST"])
