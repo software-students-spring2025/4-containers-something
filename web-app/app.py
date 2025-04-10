@@ -25,7 +25,7 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 from dotenv import load_dotenv
-from werkzeug.security import generate_password_hash  # include back check_password_hash
+from werkzeug.security import generate_password_hash  # include check_password_hash
 
 app = Flask(__name__)
 
