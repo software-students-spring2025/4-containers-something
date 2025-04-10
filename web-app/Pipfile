@@ -15,6 +15,7 @@ coverage = "*"
 pytest-cov = "*"
 dotenv = "*"
 python-dotenv = "*"
+flask-login = "*"
 
 [dev-packages]
 

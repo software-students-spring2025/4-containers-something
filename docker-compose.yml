@@ -7,6 +7,7 @@ services:
     volumes:
       - mongo_data:/data/db
     environment:
+      SECRET_KEY: ${SECRET_KEY}
       MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
@@ -35,5 +36,8 @@ services:
     volumes:
       - ./machine-learning-client:/app
       - ./outside-folder/dataset:/app/dataset
+    env_file:
+      - .env
+    
 volumes:
   mongo_data:
