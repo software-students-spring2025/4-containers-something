@@ -26,6 +26,10 @@ form {
     margin-top: 2em;
 }
 
+ul {
+    list-style-type: none;
+}
+
 #show-password {
     margin-top: 2em;
 }

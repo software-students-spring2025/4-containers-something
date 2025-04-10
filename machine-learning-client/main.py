@@ -8,12 +8,13 @@ import base64
 import os
 from datetime import datetime
 from io import BytesIO
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 from PIL import Image
 import numpy as np
 import tensorflow as tf
 from flask_cors import CORS
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 from dotenv import load_dotenv
 
 app = Flask(__name__)
@@ -125,16 +126,18 @@ def predict():
         img_array = np.expand_dims(np.array(img) / 255.0, axis=0)
 
         # predict using the model
-        # also add user ObjectId
         prediction = model.predict(img_array)
         predicted_label = LABELS[np.argmax(prediction)]
         confidence = float(np.max(prediction))
+
+        user_id = ObjectId(session.get("user_id"))
 
         # log the prediction to MongoDB
         prediction_entry = {
             "timestamp": datetime.utcnow(),
             "prediction": predicted_label,
             "confidence": confidence,
+            "user_id": user_id,
         }
         collection.insert_one(prediction_entry)
 
