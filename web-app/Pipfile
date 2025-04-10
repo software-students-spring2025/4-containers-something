@@ -13,8 +13,8 @@ pytest = "*"
 pytest-flask = "*"
 coverage = "*"
 pytest-cov = "*"
-python-dotenv = "*"
 dotenv = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
