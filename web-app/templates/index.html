@@ -35,9 +35,12 @@
 
     <div class="camera-box">
       <video id="video" autoplay playsinline></video>
+      <canvas id="canvas" style="display: none;"></canvas>
     </div>
 
-    <p class="current-sign">You are signing: <span id="current-sign">A</span></p>
+    <button id="capture-btn" class="try-btn">Capture Image</button>
+
+    <p class="current-sign">You are signing: <span id="current-sign">None</span></p>
 
     <h3>Your Signing History</h3>
     <table>
@@ -52,12 +55,15 @@
     </table>
   </section>
 
-  <!-- camera and prediction Script -->
+  <!-- Camera and Prediction Script -->
   <script>
     const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const captureBtn = document.getElementById("capture-btn");
     const currentSign = document.getElementById("current-sign");
+    const signHistory = document.getElementById("sign-history");
 
-    // access the user's webcam
+    // Access the user's webcam
     async function startCamera() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -68,19 +74,20 @@
       }
     }
 
-    // capture a frame and send it to the backend for prediction
-    async function predictSign() {
-      const canvas = document.createElement("canvas");
+    // Capture an image and send it to the backend for prediction
+    captureBtn.addEventListener("click", async () => {
+      const ctx = canvas.getContext("2d");
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      const ctx = canvas.getContext("2d");
+
+      // Draw the current video frame onto the canvas
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      // convert the captured frame to a base64 string
+      // Convert the canvas image to a base64 string
       const imageData = canvas.toDataURL("image/jpeg");
 
       try {
-        // send the base64 image to the backend
+        // Send the base64 image to the backend
         const response = await fetch("http://127.0.0.1:5001/predict", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -89,7 +96,17 @@
 
         const data = await response.json();
         if (data.prediction) {
-          currentSign.textContent = `You are signing: ${data.prediction}`;
+          const time = new Date().toLocaleTimeString();
+          currentSign.textContent = data.prediction;
+
+          // Add the prediction to the signing history
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${time}</td>
+            <td>${data.prediction}</td>
+            <td>${data.confidence.toFixed(2)}</td>
+          `;
+          signHistory.appendChild(row);
         } else {
           currentSign.textContent = "Error detecting sign.";
         }
@@ -97,13 +114,10 @@
         console.error("Prediction error:", err);
         currentSign.textContent = "Error connecting to server.";
       }
-    }
+    });
 
-    // start the camera and call predictSign every second
-    window.onload = () => {
-      startCamera();
-      setInterval(predictSign, 1000);
-    };
+    // Start the camera when the page loads
+    window.onload = startCamera;
   </script>
 </body>
 

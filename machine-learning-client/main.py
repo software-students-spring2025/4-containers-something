@@ -6,6 +6,7 @@ from base64-encoded images using a TensorFlow model.
 import logging
 import base64
 import os
+from datetime import datetime
 from io import BytesIO
 from flask import Flask, request, jsonify
 from PIL import Image
@@ -90,8 +91,13 @@ def predict():
         predicted_label = LABELS[np.argmax(prediction)]
         confidence = float(np.max(prediction))
 
-        # Test DB connection
-        # collection.insert_one({"name": "Test", "sentence": "HELLO WORLD WAHOO"})
+        # log the prediction to MongoDB
+        prediction_entry = {
+            "timestamp": datetime.utcnow(),
+            "prediction": predicted_label,
+            "confidence": confidence,
+        }
+        collection.insert_one(prediction_entry)
 
         logging.debug("Prediction: %s, Confidence: %f", predicted_label, confidence)
 
