@@ -51,7 +51,15 @@
           <th>Confidence</th>
         </tr>
       </thead>
-      <tbody id="sign-history"></tbody>
+      {% if latest %}
+      {% for item in latest %}
+      <tbody id="sign-history">
+        <td>{{ item.timestamp }}</td>
+        <td>{{ item.prediction }}</td>
+        <td>{{ item.confidence }}</td>
+      </tbody>
+      {% endfor %}
+      {% endif %}
     </table>
   </section>
 
@@ -95,6 +103,7 @@
         });
 
         const data = await response.json();
+
         if (data.prediction) {
           const time = new Date().toLocaleTimeString();
           currentSign.textContent = data.prediction;
