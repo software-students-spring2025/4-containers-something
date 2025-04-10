@@ -23,6 +23,7 @@ from flask_login import (
 )
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from bson.errors import InvalidId
 from dotenv import load_dotenv
 
 # from werkzeug.security import check_password_hash, generate_password_hash
@@ -77,9 +78,9 @@ def load_user(user_id):
     """For flask-login use"""
     user_data = users.find_one({"_id": ObjectId(user_id)})
     if user_data:
-        return User(
-            user_id=user_data["_id"], username=user_data["username"], is_active=True
-        )
+        return User(user_id=user_data["_id"],
+                    username=user_data["username"],
+                    is_active=True)
 
     return None
 
@@ -87,9 +88,17 @@ def load_user(user_id):
 @app.route("/")
 def home():
     """Render the home page (index.html)."""
-    user_id = ObjectId(session.get("user_id"))
-    latest = collection.find({"user_id": user_id}, sort=[("_id", -1)])
+    user_id = session.get("user_id")
 
+    if not user_id:
+        return render_template("index.html", latest=[])
+
+    try:
+        user_id = ObjectId(user_id)
+    except InvalidId:
+        return render_template("index.html", latest=[])
+
+    latest = collection.find({"user_id": user_id}, sort=[("_id", -1)])
     return render_template("index.html", latest=latest)
 
 
@@ -101,14 +110,17 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        user_data = users.find_one({"username": username, "password": password})
+        user_data = users.find_one({
+            "username": username,
+            "password": password
+        })
 
         if user_data:
             # check database for password
             # if check_password_hash(user_data["password"], password):
-            user_object = User(
-                user_id=user_data["_id"], username=user_data["username"], is_active=True
-            )
+            user_object = User(user_id=user_data["_id"],
+                               username=user_data["username"],
+                               is_active=True)
 
             session["user_id"] = str(user_data["_id"])
 
