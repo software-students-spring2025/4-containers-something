@@ -119,6 +119,13 @@ docker build -t ml-client ./machine-learning-client
 docker run -p 5001:5001 ml-client
 ```
 
+## Testing
+From the root directory, you can easily run the unit tests for both the client and web app code with code coverage using:
+
+```
+coverage run -m pytest machine-learning-client/ web-app/
+```
+
 ## Contributors
 
 - [Jennifer Yu](https://github.com/jenniferyuuu)
