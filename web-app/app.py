@@ -143,6 +143,15 @@ def logout():
     return redirect(url_for("login"))
 
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    """Render the register page (register.html)"""
+    if request.method == "POST":
+        pass
+
+    return render_template("register.html")
+
+
 @app.route("/data")
 def get_data():
     """Return the most recent sensor data as JSON."""

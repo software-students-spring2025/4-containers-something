@@ -4,6 +4,7 @@ Unit testing for the web app code
 
 # pylint: disable=redefined-outer-name
 
+from datetime import datetime
 from unittest.mock import patch
 import pytest
 from app import app
@@ -39,16 +40,16 @@ def test_data_route_returned_data(mock_find_one, client_fixture):
     """
     mock_data = {
         "_id": "61d6c1d7f1b1c314ce875f23",
-        "timestamp": "2025-04-03 13:45:00",
-        "sign": "A",
+        "timestamp": datetime(2025, 4, 8, 19, 56, 6, 20300).isoformat(),
+        "prediction": "A",
         "confidence": 0.8,
     }
     mock_find_one.return_value = mock_data
     response = client_fixture.get("/data")
     assert response.status_code == 200
     assert b'"_id":"61d6c1d7f1b1c314ce875f23"' in response.data
-    assert b'"timestamp":"2025-04-03 13:45:00"' in response.data
-    assert b'"sign":"A"' in response.data
+    assert b'"timestamp":"2025-04-08T19:56:06.020300"' in response.data
+    assert b'"prediction":"A"' in response.data
     assert b'"confidence":0.8' in response.data
 
 
