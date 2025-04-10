@@ -51,6 +51,7 @@
           <th>Confidence</th>
         </tr>
       </thead>
+      {% if latest %}
       {% for item in latest %}
       <tbody id="sign-history">
         <td>{{ item.timestamp }}</td>
@@ -58,6 +59,7 @@
         <td>{{ item.confidence }}</td>
       </tbody>
       {% endfor %}
+      {% endif %}
     </table>
   </section>
 
