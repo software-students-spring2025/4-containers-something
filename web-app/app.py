@@ -18,8 +18,8 @@ load_dotenv()
 app.secret_key = os.getenv("SECRET_KEY")  # Get secret key from the .env file
 
 # Load MongoDB credentials
-username = os.getenv("MONGO_INITDB_ROOT_USERNAME")
-password = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
+user = os.getenv("MONGO_INITDB_ROOT_USERNAME")
+pwd = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
 
 # Connect to MongoDB (inside a container named "mongodb")
 client = MongoClient(os.getenv("URI"))
@@ -34,7 +34,7 @@ def home():
     return render_template("index.html")
 
 
-@app.route("/login", methods=['GET', 'POST'])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     """Render the login page (login.html)."""
     # POST request
@@ -42,11 +42,13 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        if users.find_one({"username": username, "password": password}):
-            return redirect(url_for('home', username=username))
-        else:
-            flash("Invalid username or password.", "danger")
-            return render_template("login.html")
+        user_data = users.find_one({"username": username, "password": password})
+
+        if user_data:
+            return redirect(url_for("home", username=username))
+
+        flash("Invalid username or password.", "danger")
+        return render_template("login.html")
 
     # GET request
     return render_template("login.html")
