@@ -63,6 +63,9 @@
     </table>
   </section>
 
+  <!-- For fetching user id on the ML client side -->
+  <p id="user_id" style="display: none;">{{ user_id }}</p>
+
   <!-- Camera and Prediction Script -->
   <script>
     const video = document.getElementById("video");
@@ -70,6 +73,7 @@
     const captureBtn = document.getElementById("capture-btn");
     const currentSign = document.getElementById("current-sign");
     const signHistory = document.getElementById("sign-history");
+    const user_id = document.getElementById("user_id").textContent;
 
     // Access the user's webcam
     async function startCamera() {
@@ -99,7 +103,7 @@
         const response = await fetch("http://127.0.0.1:5001/predict", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ image: imageData }),
+          body: JSON.stringify({ image: imageData, user_id: user_id }),
         });
 
         const data = await response.json();
