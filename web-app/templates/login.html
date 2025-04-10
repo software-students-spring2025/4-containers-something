@@ -118,7 +118,7 @@
 
             try {
                 // Send the base64 image to the backend
-                const response = await fetch("http://127.0.0.1:5001/predict", {
+                const response = await fetch("http://127.0.0.1:5001/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ image: imageData }),
