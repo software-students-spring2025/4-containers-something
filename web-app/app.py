@@ -25,7 +25,10 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 from dotenv import load_dotenv
-from werkzeug.security import generate_password_hash  # include check_password_hash
+from werkzeug.security import (
+    generate_password_hash,
+    check_password_hash,
+)  # include check_password_hash
 
 app = Flask(__name__)
 
@@ -110,20 +113,22 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        user_data = users.find_one({"username": username, "password": password})
+        user_data = users.find_one({"username": username})
 
         if user_data:
             # check database for password
-            # if check_password_hash(user_data["password"], password):
-            user_object = User(
-                user_id=user_data["_id"], username=user_data["username"], is_active=True
-            )
+            if check_password_hash(user_data["password"], password):
+                user_object = User(
+                    user_id=user_data["_id"],
+                    username=user_data["username"],
+                    is_active=True,
+                )
 
-            session["user_id"] = str(user_data["_id"])
+                session["user_id"] = str(user_data["_id"])
 
-            login_user(user_object)
-            flash("Logged in successfully!", "success")
-            return redirect(url_for("home", username=username))
+                login_user(user_object)
+                flash("Logged in successfully!", "success")
+                return redirect(url_for("home", username=username))
 
         flash("Invalid username or password.", "danger")
         return render_template("login.html")
