@@ -1,4 +1,7 @@
+"""Train a CNN model to classify ASL alphabet images."""
+
 import os
+
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
@@ -14,19 +17,19 @@ MODEL_NAME = "sign_model.h5"
 LABELS_FILE = "labels.txt"
 
 print("📁 Scanning dataset directory...")
-labels = sorted(
+LABELS = sorted(
     [
         d
         for d in os.listdir(DATASET_PATH)
         if os.path.isdir(os.path.join(DATASET_PATH, d))
     ]
 )
-print("✅ Found labels:", labels)
+print("✅ Found labels:", LABELS)
 
 # === Save label map ===
 print("📝 Saving label map to labels.txt...")
-with open(LABELS_FILE, "w") as f:
-    for label in labels:
+with open(LABELS_FILE, "w", encoding="utf-8") as f:
+    for label in LABELS:
         f.write(f"{label}\n")
 print("✅ Label map saved.")
 
@@ -81,7 +84,7 @@ model = Sequential(
         Flatten(),
         Dense(64, activation="relu", kernel_regularizer=l2(0.001)),
         Dropout(0.4),
-        Dense(len(labels), activation="softmax"),
+        Dense(len(LABELS), activation="softmax"),
     ]
 )
 
