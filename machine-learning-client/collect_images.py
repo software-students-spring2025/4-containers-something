@@ -50,7 +50,7 @@ while True:
         resized_frame = cv2.resize(square_frame, (img_size, img_size))
         filename = os.path.join(save_dir, f"{label}_{count}.jpg")
         cv2.imwrite(filename, resized_frame)
-        print(f"📁 Saved: {filename}")
+        print(f"📁 Saved:{filename}")
         count += 1
         time.sleep(0.01)  # Slight delay for variation
     elif collecting and count >= num_images:
