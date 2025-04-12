@@ -4,7 +4,7 @@
 
 import os
 import time
-import cv2
+import cv2  # pylint: disable=import-error
 
 # === CONFIG ===
 LABEL = "C"  # Change this to the letter you're recording
