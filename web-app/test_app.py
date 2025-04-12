@@ -41,7 +41,7 @@ def test_invalid_id(mock_id, client_fixture):
     mock_id.side_effect = InvalidId("wrong_id")
     response = client_fixture.get("/")
 
-    response = client_fixture.get("/?user_id=wrongid")
+    response = client_fixture.get("/?username=wrongid")
     assert response.status_code == 200
     assert b"Sign Language Alphabet Detector" in response.data
 
