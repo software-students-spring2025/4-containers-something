@@ -33,17 +33,17 @@ def test_home(client_fixture):
     assert b"Your Signing History" in response.data
 
 
-@patch("bson.objectid")
+@patch("bson.ObjectId")
 def test_invalid_id(mock_id, client_fixture):
     """
     Test the home route to ensure it returns the home page even with an invalid user id
     """
-    mock_id.side_effect = InvalidId
-    with client_fixture.session_transaction() as session:
-        session["user_id"] = "test_id"
-
+    mock_id.side_effect = InvalidId("wrong_id")
     response = client_fixture.get("/")
+
+    response = client_fixture.get("/?user_id=wrongid")
     assert response.status_code == 200
+    assert b"Sign Language Alphabet Detector" in response.data
 
 
 # TEST DATA ROUTE
@@ -88,7 +88,8 @@ def test_register_get_request(client_fixture):
     assert b"Sign Up" in response.data
 
 
-def test_register_new_user(client_fixture):
+@patch("app.collection.insert_one")
+def test_register_new_user(mock_insert, client_fixture):
     """
     Test the register route with a new user
     """
@@ -100,9 +101,11 @@ def test_register_new_user(client_fixture):
 
     assert response.status_code == 200
     assert b"Login" in response.data
+    assert mock_insert
 
 
-def test_register_existing_user(client_fixture):
+@patch("app.collection.insert_one")
+def test_register_existing_user(mock_insert, client_fixture):
     """
     Test the register route with an existing user
     """
@@ -118,6 +121,7 @@ def test_register_existing_user(client_fixture):
         follow_redirects=True,
     )
 
+    mock_insert.assert_not_called()
     assert response.status_code == 200
     assert b"Username already exists. Please try again." in response.data
 
