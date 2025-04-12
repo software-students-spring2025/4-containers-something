@@ -142,8 +142,10 @@ cython_debug/
 
 # Model files and datasets
 machine-learning-client/sign_model.h5
+machine-learning-client/sign_model1.h5
 machine-learning-client/dataset/
-dataset.zip
+machine-learning-client/exported_images/
+machine-learning-client/dimensions.py
 
 # Docker build cache files
 *.tar
@@ -154,3 +156,5 @@ node_modules/
 npm-debug.log
 yarn-debug.log
 yarn-error.log
+
+outside-folder
