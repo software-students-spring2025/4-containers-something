@@ -165,7 +165,7 @@ def register():
         hashed_password = generate_password_hash(password)
         users.insert_one({"username": username, "password": hashed_password})
 
-        # go to login page after sign up is done
+        flash("Signed up successfully! Please login.", "success")
         return redirect(url_for("login"))
 
     # get request
