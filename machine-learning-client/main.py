@@ -39,20 +39,21 @@ except Exception as e:
     collection = None
 
 # === Load label list ===
-LABELS_FILE = 'labels.txt'
+LABELS_FILE = "labels.txt"
 if os.path.exists(LABELS_FILE):
-    with open(LABELS_FILE, 'r') as f:
+    with open(LABELS_FILE, "r") as f:
         LABELS = [line.strip() for line in f.readlines()]
     logging.info("✅ Loaded labels from labels.txt.")
 else:
     logging.warning("⚠️ labels.txt not found. Using fallback.")
-    LABELS = [chr(c) for c in range(ord('A'), ord('C') + 1)]
+    LABELS = [chr(c) for c in range(ord("A"), ord("C") + 1)]
 
 
 # === Routes ===
 @app.route("/", methods=["GET"])
 def home():
     return "Welcome to the ASL Prediction API!"
+
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -62,7 +63,9 @@ def predict():
             return jsonify({"error": "No image provided"}), 400
 
         image_base64 = data["image"]
-        image_data = base64.b64decode(image_base64.split(",")[1] if "," in image_base64 else image_base64)
+        image_data = base64.b64decode(
+            image_base64.split(",")[1] if "," in image_base64 else image_base64
+        )
 
         # Load image
         img = Image.open(BytesIO(image_data)).convert("RGB")
@@ -98,11 +101,13 @@ def predict():
 
         # Log to DB
         if collection is not None:
-            collection.insert_one({
-                "timestamp": datetime.utcnow(),
-                "prediction": predicted_label,
-                "confidence": confidence
-            })
+            collection.insert_one(
+                {
+                    "timestamp": datetime.utcnow(),
+                    "prediction": predicted_label,
+                    "confidence": confidence,
+                }
+            )
 
         return jsonify({"prediction": predicted_label, "confidence": confidence})
 

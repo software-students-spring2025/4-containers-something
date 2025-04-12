@@ -3,10 +3,12 @@ import os
 import time
 
 # === CONFIG ===
-label = 'C'  # 🖐 Change this to the letter you're recording
+label = "C"  # 🖐 Change this to the letter you're recording
 img_size = 100  # 📏 Image size (100x100)
 num_images = 2000  # 🖼️ Total number of images to capture
-save_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'dataset', 'asl_alphabet_train', label))
+save_dir = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "dataset", "asl_alphabet_train", label)
+)
 os.makedirs(save_dir, exist_ok=True)
 
 # === Setup webcam ===
@@ -29,24 +31,24 @@ while True:
     min_dim = min(height, width)
     start_x = (width - min_dim) // 2
     start_y = (height - min_dim) // 2
-    square_frame = frame[start_y:start_y + min_dim, start_x:start_x + min_dim]
+    square_frame = frame[start_y : start_y + min_dim, start_x : start_x + min_dim]
 
     # Display cropped square
-    cv2.imshow('Capture Window', square_frame)
+    cv2.imshow("Capture Window", square_frame)
     key = cv2.waitKey(1)
 
-    if key == ord('c') and not collecting:
+    if key == ord("c") and not collecting:
         print("🚀 Starting capture...")
         collecting = True
         start_time = time.time()
 
-    if key == ord('q'):
+    if key == ord("q"):
         print("👋 Quit requested.")
         break
 
     if collecting and count < num_images:
         resized_frame = cv2.resize(square_frame, (img_size, img_size))
-        filename = os.path.join(save_dir, f'{label}_{count}.jpg')
+        filename = os.path.join(save_dir, f"{label}_{count}.jpg")
         cv2.imwrite(filename, resized_frame)
         print(f"📁 Saved: {filename}")
         count += 1

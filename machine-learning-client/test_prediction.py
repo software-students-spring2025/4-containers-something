@@ -12,7 +12,7 @@ IMG_SIZE = 100
 model = load_model(MODEL_PATH)
 
 # === Load labels ===
-with open(LABELS_PATH, 'r') as f:
+with open(LABELS_PATH, "r") as f:
     LABELS = [line.strip() for line in f.readlines()]
 
 # === Load and preprocess image ===
