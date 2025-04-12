@@ -145,7 +145,7 @@ machine-learning-client/sign_model.h5
 machine-learning-client/sign_model1.h5
 machine-learning-client/dataset/
 machine-learning-client/exported_images/
-machine-learning-client/dimensions.py
+machine-learning-client/encode_image.py
 
 # Docker build cache files
 *.tar
