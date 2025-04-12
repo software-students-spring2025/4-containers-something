@@ -1,21 +1,23 @@
 """Main Flask application for ASL prediction."""
 
+# pylint: disable=invalid-name
+# pylint: disable=broad-exception-caught
+
 import os
 import base64
 import logging
 from datetime import datetime
 from io import BytesIO
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import numpy as np
-from PIL import Image
-from tensorflow.keras.models import load_model
-
-# pylint: disable=no-member
-# pylint: disable=invalid-name
-
+from PIL import Image  # pylint: disable=import-error
+from tensorflow.keras.models import (
+    load_model,
+)  # pylint: disable=no-name-in-module, import-error
 
 # === Initialize Flask app ===
 app = Flask(__name__)
@@ -31,7 +33,7 @@ try:
     logging.info("✅ Model loaded successfully.")
 except Exception as e:
     logging.error("❌ Failed to load model: %s", e)
-    raise e
+    raise
 
 # === Setup MongoDB ===
 try:
@@ -56,24 +58,23 @@ else:
 
 @app.route("/", methods=["GET"])
 def home():
-    """Home route"""
+    """Health check route."""
     return "Welcome to the ASL Prediction API!"
 
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    """Standard prediction endpoint"""
+    """Prediction endpoint using uploaded base64 image."""
     try:
         data = request.get_json()
         if not data or "image" not in data:
             return jsonify({"error": "No image provided"}), 400
 
-        image_base64 = data["image"]
         image_data = base64.b64decode(
-            image_base64.split(",")[1] if "," in image_base64 else image_base64
+            data["image"].split(",")[1] if "," in data["image"] else data["image"]
         )
         img = Image.open(BytesIO(image_data)).convert("RGB")
-        img = img.resize((100, 100), Image.LANCZOS)
+        img = img.resize((100, 100))  # pylint: disable=no-member
         img_array = np.expand_dims(np.array(img) / 255.0, axis=0)
 
         prediction = model.predict(img_array)
@@ -85,7 +86,7 @@ def predict():
         predicted_label = LABELS[top_index]
         confidence = float(prediction[0][top_index])
 
-        if SENSOR_DATA is not None:
+        if SENSOR_DATA:
             SENSOR_DATA.insert_one(
                 {
                     "timestamp": datetime.utcnow(),
@@ -104,18 +105,17 @@ def predict():
 @app.route("/predict_login", methods=["POST", "OPTIONS"])
 @cross_origin(origins=["http://127.0.0.1:5002"])
 def predict_login():
-    """Prediction endpoint for login page"""
+    """Prediction endpoint for login page (image-only)."""
     try:
         data = request.get_json()
         if not data or "image" not in data:
             return jsonify({"error": "No image provided"}), 400
 
-        image_base64 = data["image"]
         image_data = base64.b64decode(
-            image_base64.split(",")[1] if "," in image_base64 else image_base64
+            data["image"].split(",")[1] if "," in data["image"] else data["image"]
         )
         img = Image.open(BytesIO(image_data)).convert("RGB")
-        img = img.resize((100, 100), Image.LANCZOS)
+        img = img.resize((100, 100))  # pylint: disable=no-member
         img_array = np.expand_dims(np.array(img) / 255.0, axis=0)
 
         prediction = model.predict(img_array)

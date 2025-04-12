@@ -1,13 +1,15 @@
 """Capture ASL alphabet training images using webcam."""
 
+# pylint: disable=no-member, invalid-name
+
 import os
 import time
 import cv2
 
 # === CONFIG ===
 LABEL = "C"  # Change this to the letter you're recording
-IMG_SIZE = 100  # Image size (100x100)
-NUM_IMAGES = 2000  # Total number of images to capture
+IMG_SIZE = 100
+NUM_IMAGES = 2000
 
 SAVE_DIR = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "dataset", "asl_alphabet_train", LABEL)
@@ -35,8 +37,8 @@ while True:
     start_y = (height - min_dim) // 2
     square_frame = frame[start_y : start_y + min_dim, start_x : start_x + min_dim]
 
-    cv2.imshow("Capture Window", square_frame)
-    key = cv2.waitKey(1)
+    cv2.imshow("Capture Window", square_frame)  # pylint: disable=no-member
+    key = cv2.waitKey(1)  # pylint: disable=no-member
 
     if key == ord("c") and not collecting:
         print("🚀 Starting capture...")
@@ -48,9 +50,11 @@ while True:
         break
 
     if collecting and count < NUM_IMAGES:
-        resized_frame = cv2.resize(square_frame, (IMG_SIZE, IMG_SIZE))
+        resized_frame = cv2.resize(
+            square_frame, (IMG_SIZE, IMG_SIZE)
+        )  # pylint: disable=no-member
         filename = os.path.join(SAVE_DIR, f"{LABEL}_{count}.jpg")
-        cv2.imwrite(filename, resized_frame)
+        cv2.imwrite(filename, resized_frame)  # pylint: disable=no-member
         print(f"📁 Saved: {filename}")
         count += 1
         time.sleep(0.01)
@@ -59,4 +63,4 @@ while True:
         break
 
 cap.release()
-cv2.destroyAllWindows()
+cv2.destroyAllWindows()  # pylint: disable=no-member

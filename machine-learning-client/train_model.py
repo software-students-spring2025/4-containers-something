@@ -1,5 +1,7 @@
 """Train a CNN model to classify ASL alphabet images."""
 
+# pylint: disable=no-name-in-module, import-error
+
 import os
 
 from tensorflow.keras.preprocessing.image import ImageDataGenerator

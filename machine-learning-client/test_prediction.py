@@ -1,4 +1,6 @@
-"""Predicting to see if test was trained correctly"""
+"""Predicting a single ASL image to check if model was trained correctly."""
+
+# pylint: disable=no-member, no-name-in-module, import-error
 
 import cv2
 import numpy as np
@@ -14,13 +16,13 @@ IMG_SIZE = 100
 model = load_model(MODEL_PATH)
 
 # === Load labels ===
-with open(LABELS_PATH, "r") as f:
+with open(LABELS_PATH, "r", encoding="utf-8") as f:
     LABELS = [line.strip() for line in f.readlines()]
 
 # === Load and preprocess image ===
-img = cv2.imread(IMAGE_PATH)
-img = cv2.resize(img, (IMG_SIZE, IMG_SIZE))
-img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB
+img = cv2.imread(IMAGE_PATH)  # pylint: disable=no-member
+img = cv2.resize(img, (IMG_SIZE, IMG_SIZE))  # pylint: disable=no-member
+img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # pylint: disable=no-member
 img = img / 255.0
 img = np.expand_dims(img, axis=0)  # Shape: (1, 100, 100, 3)
 
