@@ -15,9 +15,8 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 import numpy as np
 from PIL import Image  # pylint: disable=import-error
-from tensorflow.keras.models import (
-    load_model,
-)  # pylint: disable=no-name-in-module, import-error
+from tensorflow.keras.models import load_model  # pylint: disable=no-name-in-module, import-error
+
 
 # === Initialize Flask app ===
 app = Flask(__name__)
