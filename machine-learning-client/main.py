@@ -5,14 +5,17 @@ import base64
 import logging
 from datetime import datetime
 from io import BytesIO
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import numpy as np
 from PIL import Image
-import tensorflow as tf
+from tensorflow.keras.models import load_model
+
+# pylint: disable=no-member
+# pylint: disable=invalid-name
+
 
 # === Initialize Flask app ===
 app = Flask(__name__)
@@ -24,7 +27,7 @@ load_dotenv()
 
 # === Load trained model (expects 100x100 input) ===
 try:
-    model = tf.keras.models.load_model("sign_model.h5")
+    model = load_model("sign_model.h5")
     logging.info("✅ Model loaded successfully.")
 except Exception as e:
     logging.error("❌ Failed to load model: %s", e)
