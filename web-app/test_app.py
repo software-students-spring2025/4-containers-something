@@ -62,3 +62,96 @@ def test_data_route_no_data(mock_find_one, client_fixture):
     response = client_fixture.get("/data")
     assert response.status_code == 200
     assert b'{"message":"No data found."}' in response.data
+
+
+def test_register_get_request(client_fixture):
+    """
+    Test the register route with get request
+    """
+    response = client_fixture.get("/register")
+    assert response.status_code == 200
+    assert b"Sign Up" in response.data
+
+
+def test_register_new_user(client_fixture):
+    """
+    Test the register route with a new user
+    """
+    response = client_fixture.post(
+        "/register",
+        data={"username": "test1", "password": "password1"},
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    assert b"Login" in response.data
+
+
+def test_register_existing_user(client_fixture):
+    """
+    Test the register route with an existing user
+    """
+    client_fixture.post(
+        "/register",
+        data={"username": "test123", "password": "password123"},
+        follow_redirects=True,
+    )
+
+    response = client_fixture.post(
+        "/register",
+        data={"username": "test123", "password": "password123"},
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    assert b"Username already exists. Please try again." in response.data
+
+
+def test_login_get_request(client_fixture):
+    """
+    Test the login route with get request
+    """
+    response = client_fixture.get("/login")
+    assert response.status_code == 200
+    assert b"Login" in response.data
+
+
+def test_login_successful(client_fixture):
+    """
+    Test the login route to ensure existing user can login
+    """
+    client_fixture.post(
+        "/register", data={"username": "test123", "password": "password123"}
+    )
+    response = client_fixture.post(
+        "/login",
+        data={"username": "test123", "password": "password123"},
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    assert b"Sign Language Alphabet Detector" in response.data
+
+
+def test_login_failure(client_fixture):
+    """
+    Test the login route outputs error message when user cannot log in
+    """
+    response = client_fixture.post(
+        "/login",
+        data={"username": "error404", "password": "failing404"},
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    assert b"Invalid username or password." in response.data
+
+
+def test_logout(client_fixture):
+    """
+    Test the logout route to ensure user has been succesfully logged out
+    """
+    response = client_fixture.get("/logout", follow_redirects=True)
+
+    assert response.status_code == 200
+    assert b"You have been logged out." in response.data
