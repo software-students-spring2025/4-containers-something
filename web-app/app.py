@@ -82,9 +82,9 @@ def load_user(user_id):
     """For flask-login use"""
     user_data = users.find_one({"_id": ObjectId(user_id)})
     if user_data:
-        return User(user_id=user_data["_id"],
-                    username=user_data["username"],
-                    is_active=True)
+        return User(
+            user_id=user_data["_id"], username=user_data["username"], is_active=True
+        )
 
     return None
 
