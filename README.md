@@ -35,6 +35,7 @@ MONGO_INITDB_ROOT_PASSWORD=password
 MONGO_DB_NAME=database
 DB_HOST=mongodb://<username>:<password>@<host>/<dbName>?authSource=<source>
 URI=uriString
+SECRET_KEY=secret
 ```
 
 3. Create a virtual environment with `pip`

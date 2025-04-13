@@ -62,3 +62,21 @@ def test_data_route_no_data(mock_find_one, client_fixture):
     response = client_fixture.get("/data")
     assert response.status_code == 200
     assert b'{"message":"No data found."}' in response.data
+
+
+def test_register_get_request(client_fixture):
+    """
+    Test the register route with get request
+    """
+    response = client_fixture.get("/register")
+    assert response.status_code == 200
+    assert b"Sign Up" in response.data
+
+
+def test_login_get_request(client_fixture):
+    """
+    Test the login route with get request
+    """
+    response = client_fixture.get("/login")
+    assert response.status_code == 200
+    assert b"Login" in response.data

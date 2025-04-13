@@ -28,7 +28,7 @@ from dotenv import load_dotenv
 from werkzeug.security import (
     generate_password_hash,
     check_password_hash,
-)  # include check_password_hash
+)
 
 app = Flask(__name__)
 
@@ -155,17 +155,15 @@ def register():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        # existing username is found
         user_doc = users.find_one({"username": username})
         if user_doc:
             flash("Username already exists. Please try again.", "error")
             return redirect(url_for("register"))
 
-        # create hashed password, add new user to users collection
         hashed_password = generate_password_hash(password)
         users.insert_one({"username": username, "password": hashed_password})
 
-        # go to login page after sign up is done
+        flash("Signed up successfully! Please login.", "success")
         return redirect(url_for("login"))
 
     # get request
