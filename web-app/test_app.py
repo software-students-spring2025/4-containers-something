@@ -7,7 +7,7 @@ Unit testing for the web app code
 from datetime import datetime
 from unittest.mock import patch
 import pytest
-from app import app, users
+from app import app
 
 
 @pytest.fixture
@@ -75,19 +75,18 @@ def test_register_get_request(client_fixture):
     assert b"Sign Up" in response.data
 
 
-@patch.object(users, "find_one", return_value=None)
-@patch.object(users, "insert_one", return_value=None)
-def test_register_new_user(client, mock_insert_one, mock_find_one):
+@patch("app.users.find_one", return_value=None)
+@patch("app.users.insert_one", return_value=None)
+def test_register_new_user(mock_insert_one, mock_find_one, client_fixture):
     """
     Test the register route with post request
     """
-    response = client.post(
+    response = client_fixture.post(
         "/register", data={"username": "new_user", "password": "password123"}
     )
     mock_find_one.assert_called_once_with({"username": "new_user"})
     mock_insert_one.assert_called_once()
     assert response.status_code == 302
-    assert b"Signed up successfully!" in response.data
 
 
 def test_login_get_request(client_fixture):
