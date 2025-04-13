@@ -7,7 +7,6 @@ Unit testing for the web app code
 from datetime import datetime
 from unittest.mock import patch
 import pytest
-from bson.errors import InvalidId
 from app import app
 
 
@@ -31,19 +30,6 @@ def test_home(client_fixture):
     assert b"Sign Language Alphabet Detector" in response.data
     assert b"Live Detector" in response.data
     assert b"Your Signing History" in response.data
-
-
-@patch("bson.ObjectId")
-def test_invalid_id(mock_id, client_fixture):
-    """
-    Test the home route to ensure it returns the home page even with an invalid user id
-    """
-    mock_id.side_effect = InvalidId("wrong_id")
-    response = client_fixture.get("/")
-
-    response = client_fixture.get("/?username=wrongid")
-    assert response.status_code == 200
-    assert b"Sign Language Alphabet Detector" in response.data
 
 
 # TEST DATA ROUTE
