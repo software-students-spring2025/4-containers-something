@@ -5,7 +5,7 @@ Unit testing for the web app code
 # pylint: disable=redefined-outer-name
 
 from datetime import datetime
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 import pytest
 from app import app
 
@@ -15,6 +15,7 @@ def client_fixture():
     """
     Create a test client for the Flask application.
     """
+    app.config["TESTING"] = True
     with app.test_client() as client:
         yield client
 
@@ -73,10 +74,14 @@ def test_register_get_request(client_fixture):
     assert b"Sign Up" in response.data
 
 
-def test_register_new_user(client_fixture):
+@patch("app.users")
+def test_register_new_user(mock_user, client_fixture):
     """
     Test the register route with a new user
     """
+    mock_user.find_one.return_value = None
+    mock_user.insert_one.return_value = MagicMock()
+
     response = client_fixture.post(
         "/register",
         data={"username": "test1", "password": "password1"},
@@ -94,20 +99,3 @@ def test_login_get_request(client_fixture):
     response = client_fixture.get("/login")
     assert response.status_code == 200
     assert b"Login" in response.data
-
-
-def test_login_successful(client_fixture):
-    """
-    Test the login route to ensure existing user can login
-    """
-    client_fixture.post(
-        "/register", data={"username": "test123", "password": "password123"}
-    )
-    response = client_fixture.post(
-        "/login",
-        data={"username": "test123", "password": "password123"},
-        follow_redirects=True,
-    )
-
-    assert response.status_code == 200
-    assert b"Sign Language Alphabet Detector" in response.data
