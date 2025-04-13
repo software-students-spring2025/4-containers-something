@@ -87,7 +87,7 @@ def predict():
         predicted_label = LABELS[top_index]
         confidence = float(prediction[0][top_index])
 
-        if SENSOR_DATA:
+        if SENSOR_DATA is not None:
             SENSOR_DATA.insert_one(
                 {
                     "timestamp": datetime.utcnow(),
