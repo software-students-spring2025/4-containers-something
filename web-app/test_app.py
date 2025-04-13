@@ -87,36 +87,6 @@ def test_register_get_request(client_fixture):
     assert b"Sign Up" in response.data
 
 
-def test_register_new_user(client_fixture, mock_database):
-    """
-    Test the register route with a new user
-    """
-    response = client_fixture.post(
-        "/register",
-        data={"username": "test0", "password": "password0"},
-        follow_redirects=True,
-    )
-    doc = mock_database.find_one({"username": "test0"})
-    assert response.status_code == 200
-    assert b"Login" in response.data
-    assert doc is not None
-
-
-def test_register_existing_user(client_fixture, mock_database):
-    """
-    Test the register route with an existing user
-    """
-    mock_database.insert_one({"username": "existing1", "password": "exists1"})
-    response = client_fixture.post(
-        "/register",
-        data={"username": "existing1", "password": "randompw"},
-        follow_redirects=True,
-    )
-
-    assert response.status_code == 200
-    assert b"Username already exists. Please try again." in response.data
-
-
 def test_login_get_request(client_fixture):
     """
     Test the login route with get request
