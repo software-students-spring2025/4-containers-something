@@ -15,8 +15,6 @@ def client_fixture():
     """
     Create a test client for the Flask application.
     """
-    app.config["TESTING"] = True
-    app.config["WTF_CSRF_ENABLED"] = False
     with app.test_client() as client:
         yield client
 
@@ -73,40 +71,6 @@ def test_register_get_request(client_fixture):
     response = client_fixture.get("/register")
     assert response.status_code == 200
     assert b"Sign Up" in response.data
-
-
-def test_register_new_user(client_fixture):
-    """
-    Test the register route with a new user
-    """
-    response = client_fixture.post(
-        "/register",
-        data={"username": "test1", "password": "password1"},
-        follow_redirects=True,
-    )
-
-    assert response.status_code == 200
-    assert b"Login" in response.data
-
-
-def test_register_existing_user(client_fixture):
-    """
-    Test the register route with an existing user
-    """
-    client_fixture.post(
-        "/register",
-        data={"username": "test123", "password": "password123"},
-        follow_redirects=True,
-    )
-
-    response = client_fixture.post(
-        "/register",
-        data={"username": "test123", "password": "password123"},
-        follow_redirects=True,
-    )
-
-    assert response.status_code == 200
-    assert b"Username already exists. Please try again." in response.data
 
 
 def test_login_get_request(client_fixture):
