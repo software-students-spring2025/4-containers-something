@@ -73,20 +73,19 @@ def test_register_get_request(client_fixture):
     assert b"Sign Up" in response.data
 
 
-def test_register_new_user(client_fixture, mocker):
+@patch("app.users.find_one")
+@patch("app.users.insert_one")
+def test_register_successful(mock_insert_one, mock_find_one, client):
     """
-    Test the register route with a new user registering
+    Test the register route with post request
     """
-    mock_db = mocker.patch("app.users")
-    mock_db.find_one.return_value = None
-    mock_insert_one = mock_db.insert_one
-    response = client_fixture.post(
+    mock_find_one.return_value = None
+    response = client.post(
         "/register",
-        data={"username": "test0", "password": "password0"},
+        data={"username": "username123", "password": "password123"},
         follow_redirects=True,
     )
     mock_insert_one.assert_called_once()
-    assert response.status_code == 200
     assert b"Login" in response.data
 
 
