@@ -54,7 +54,7 @@ if os.path.exists(LABELS_FILE):
     logging.info("✅ Loaded labels from labels.txt.")
 else:
     logging.warning("⚠️ labels.txt not found. Using fallback.")
-    LABELS = [chr(c) for c in range(ord("A"), ord("C") + 1)]
+    LABELS = [chr(c) for c in range(ord("A"), ord("Z") + 1)]
 
 
 @app.route("/", methods=["GET"])

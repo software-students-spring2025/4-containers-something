@@ -8,7 +8,7 @@ from tensorflow.keras.models import load_model
 
 # === Config ===
 MODEL_PATH = "sign_model.h5"
-IMAGE_PATH = "dataset/asl_alphabet_train/A/A_100.jpg"
+IMAGE_PATH = "dataset/asl_alphabet_train/Z/Z_100.jpg"
 LABELS_PATH = "labels.txt"
 IMG_SIZE = 100
 

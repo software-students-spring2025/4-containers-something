@@ -7,7 +7,7 @@ import time
 import cv2  # pylint: disable=import-error
 
 # === CONFIG ===
-LABEL = "C"  # Change this to the letter you're recording
+LABEL = "Z"  # Change this to the letter you're recording
 IMG_SIZE = 100
 NUM_IMAGES = 2000
 

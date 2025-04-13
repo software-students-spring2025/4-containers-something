@@ -8,12 +8,13 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
-from tensorflow.keras.regularizers import l2
 
+# from tensorflow.keras.regularizers import l2
+_
 # === CONFIG ===
 DATASET_PATH = "dataset/asl_alphabet_train"
 IMG_SIZE = 100
-EPOCHS = 30
+EPOCHS = 100
 BATCH_SIZE = 32
 MODEL_NAME = "sign_model.h5"
 LABELS_FILE = "labels.txt"
@@ -71,24 +72,21 @@ val_gen = datagen.flow_from_directory(
 print("🛠️ Building CNN model...")
 model = Sequential(
     [
-        Conv2D(
-            16,
-            (3, 3),
-            activation="relu",
-            input_shape=(IMG_SIZE, IMG_SIZE, 3),
-            kernel_regularizer=l2(0.001),
-        ),
+        Conv2D(32, (3, 3), activation="relu", input_shape=(IMG_SIZE, IMG_SIZE, 3)),
         MaxPooling2D(2, 2),
         Dropout(0.2),
-        Conv2D(32, (3, 3), activation="relu", kernel_regularizer=l2(0.001)),
+        Conv2D(64, (3, 3), activation="relu"),
         MaxPooling2D(2, 2),
         Dropout(0.3),
+        Conv2D(128, (3, 3), activation="relu"),
+        MaxPooling2D(2, 2),
         Flatten(),
-        Dense(64, activation="relu", kernel_regularizer=l2(0.001)),
-        Dropout(0.4),
+        Dense(128, activation="relu"),
+        Dropout(0.5),
         Dense(len(LABELS), activation="softmax"),
     ]
 )
+
 
 model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
 print("✅ Model compiled.")
