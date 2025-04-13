@@ -7,20 +7,7 @@ Unit testing for the web app code
 from datetime import datetime
 from unittest.mock import patch
 import pytest
-import mongomock
 from app import app
-
-
-@pytest.fixture(autouse=True)
-def mock_database(monkeypatch):
-    """
-    Creates a mongo client to mocks a mongodb database
-    """
-    client = mongomock.MongoClient()
-    database = client["testing_db"]
-    mock_users = database["users"]
-    monkeypatch.setattr("app.users", mock_users)
-    yield mock_users
 
 
 @pytest.fixture
@@ -28,7 +15,6 @@ def client_fixture():
     """
     Create a test client for the Flask application.
     """
-    app.config["TESTING"] = True
     with app.test_client() as client:
         yield client
 
@@ -86,13 +72,14 @@ def test_register_get_request(client_fixture):
     assert response.status_code == 200
     assert b"Sign Up" in response.data
 
+
 def test_register_new_user(client_fixture, mocker):
     """
-    Test the register route with a new user registering 
+    Test the register route with a new user registering
     """
     mock_db = mocker.patch("app.users")
     mock_db.find_one.return_value = None
-    mock_insert_one = mock_db.insert_one 
+    mock_insert_one = mock_db.insert_one
     response = client_fixture.post(
         "/register",
         data={"username": "test0", "password": "password0"},
@@ -110,6 +97,7 @@ def test_login_get_request(client_fixture):
     response = client_fixture.get("/login")
     assert response.status_code == 200
     assert b"Login" in response.data
+
 
 def test_logout(client_fixture):
     """
