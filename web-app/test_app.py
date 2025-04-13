@@ -86,6 +86,22 @@ def test_register_get_request(client_fixture):
     assert response.status_code == 200
     assert b"Sign Up" in response.data
 
+def test_register_new_user(client_fixture, mocker):
+    """
+    Test the register route with a new user registering 
+    """
+    mock_db = mocker.patch("app.users")
+    mock_db.find_one.return_value = None
+    mock_insert_one = mock_db.insert_one 
+    response = client_fixture.post(
+        "/register",
+        data={"username": "test0", "password": "password0"},
+        follow_redirects=True,
+    )
+    mock_insert_one.assert_called_once()
+    assert response.status_code == 200
+    assert b"Login" in response.data
+
 
 def test_login_get_request(client_fixture):
     """
@@ -94,3 +110,10 @@ def test_login_get_request(client_fixture):
     response = client_fixture.get("/login")
     assert response.status_code == 200
     assert b"Login" in response.data
+
+def test_logout(client_fixture):
+    """
+    Test the logout route with get request
+    """
+    response = client_fixture.get("/logout")
+    assert response.status_code == 302
