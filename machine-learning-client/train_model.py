@@ -10,7 +10,7 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropou
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 
 # from tensorflow.keras.regularizers import l2
-_
+
 # === CONFIG ===
 DATASET_PATH = "dataset/asl_alphabet_train"
 IMG_SIZE = 100
