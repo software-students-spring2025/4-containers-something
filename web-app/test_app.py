@@ -7,20 +7,7 @@ Unit testing for the web app code
 from datetime import datetime
 from unittest.mock import patch
 import pytest
-import mongomock
 from app import app
-
-
-@pytest.fixture(autouse=True)
-def mock_database(monkeypatch):
-    """
-    Creates a mongo client to mocks a mongodb database
-    """
-    client = mongomock.MongoClient()
-    database = client["testing_db"]
-    mock_users = database["users"]
-    monkeypatch.setattr("app.users", mock_users)
-    yield mock_users
 
 
 @pytest.fixture
@@ -28,7 +15,6 @@ def client_fixture():
     """
     Create a test client for the Flask application.
     """
-    app.config["TESTING"] = True
     with app.test_client() as client:
         yield client
 
