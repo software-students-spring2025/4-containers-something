@@ -17,6 +17,7 @@ dotenv = "*"
 python-dotenv = "*"
 flask-login = "*"
 requests = "*"
+mongomock = "*"
 
 [dev-packages]
 

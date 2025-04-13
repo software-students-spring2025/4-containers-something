@@ -5,9 +5,22 @@ Unit testing for the web app code
 # pylint: disable=redefined-outer-name
 
 from datetime import datetime
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 import pytest
+import mongomock
 from app import app
+
+
+@pytest.fixture(autouse=True)
+def mock_database(monkeypatch):
+    """
+    Creates a mongo client to mocks a mongodb database
+    """
+    client = mongomock.MongoClient()
+    database = client["testing_db"]
+    mock_users = database["users"]
+    monkeypatch.setattr("app.users", mock_users)
+    yield mock_users
 
 
 @pytest.fixture
@@ -74,22 +87,19 @@ def test_register_get_request(client_fixture):
     assert b"Sign Up" in response.data
 
 
-@patch("app.users")
-def test_register_new_user(mock_user, client_fixture):
+def test_register_new_user(client_fixture, mock_database):
     """
     Test the register route with a new user
     """
-    mock_user.find_one.return_value = None
-    mock_user.insert_one.return_value = MagicMock()
-
     response = client_fixture.post(
         "/register",
-        data={"username": "test1", "password": "password1"},
+        data={"username": "test0", "password": "password0"},
         follow_redirects=True,
     )
-
+    doc = mock_database.find_one({"username": "test0"})
     assert response.status_code == 200
     assert b"Login" in response.data
+    assert doc is not None
 
 
 def test_login_get_request(client_fixture):
