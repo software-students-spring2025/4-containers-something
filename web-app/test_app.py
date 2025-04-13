@@ -73,6 +73,20 @@ def test_register_get_request(client_fixture):
     assert b"Sign Up" in response.data
 
 
+def test_register_new_user(client_fixture):
+    """
+    Test the register route with a new user
+    """
+    response = client_fixture.post(
+        "/register",
+        data={"username": "test1", "password": "password1"},
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    assert b"Login" in response.data
+
+
 def test_login_get_request(client_fixture):
     """
     Test the login route with get request
@@ -80,3 +94,20 @@ def test_login_get_request(client_fixture):
     response = client_fixture.get("/login")
     assert response.status_code == 200
     assert b"Login" in response.data
+
+
+def test_login_successful(client_fixture):
+    """
+    Test the login route to ensure existing user can login
+    """
+    client_fixture.post(
+        "/register", data={"username": "test123", "password": "password123"}
+    )
+    response = client_fixture.post(
+        "/login",
+        data={"username": "test123", "password": "password123"},
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    assert b"Sign Language Alphabet Detector" in response.data
