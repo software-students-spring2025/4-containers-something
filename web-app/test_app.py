@@ -82,10 +82,22 @@ def test_register_new_user(mock_insert_one, mock_find_one, client_fixture):
     Test the register route with post request
     """
     response = client_fixture.post(
-        "/register", data={"username": "new_user", "password": "password123"}
+        "/register", data={"username": "new_registered_user", "password": "new12345"}
     )
-    mock_find_one.assert_called_once_with({"username": "new_user"})
+    mock_find_one.assert_called_once_with({"username": "new_registered_user"})
     mock_insert_one.assert_called_once()
+    assert response.status_code == 302
+
+
+@patch("app.users.find_one", return_value={"username": "already_registered"})
+def test_register_user_exists(mock_find_one, client_fixture):
+    """
+    Test the register route with an existing user
+    """
+    response = client_fixture.post(
+        "/register", data={"username": "already_registered", "password": "anotherpw"}
+    )
+    mock_find_one.assert_called_once_with({"username": "already_registered"})
     assert response.status_code == 302
 
 
@@ -96,6 +108,25 @@ def test_login_get_request(client_fixture):
     response = client_fixture.get("/login")
     assert response.status_code == 200
     assert b"Login" in response.data
+
+
+@patch(
+    "app.users.find_one",
+    return_value={
+        "_id": "1234567890",
+        "username": "username1234",
+        "password": "password1234",
+    },
+)
+def test_login_successful(mock_find_one, client_fixture):
+    """
+    Test the login route with post request
+    """
+    response = client_fixture.post(
+        "/login", data={"username": "username1234", "password": "password1234"}
+    )
+    mock_find_one.assert_called_once()
+    assert response.status_code == 200
 
 
 def test_logout(client_fixture):
