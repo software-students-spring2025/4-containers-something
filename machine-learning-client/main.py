@@ -19,7 +19,6 @@ from PIL import Image  # pylint: disable=import-error
 from tensorflow.keras.models import load_model  # pylint: disable=no-name-in-module, import-error
 # fmt: on
 
-
 # === Initialize Flask app ===
 app = Flask(__name__)
 CORS(app)
@@ -71,9 +70,8 @@ def predict():
         if not data or "image" not in data:
             return jsonify({"error": "No image provided"}), 400
 
-        image_data = base64.b64decode(
-            data["image"].split(",")[1] if "," in data["image"] else data["image"]
-        )
+        image_data = base64.b64decode(data["image"].split(",")[1] if "," in
+                                      data["image"] else data["image"])
         img = Image.open(BytesIO(image_data)).convert("RGB")
         img = img.resize((100, 100))  # pylint: disable=no-member
         img_array = np.expand_dims(np.array(img) / 255.0, axis=0)
@@ -88,15 +86,16 @@ def predict():
         confidence = float(prediction[0][top_index])
 
         if SENSOR_DATA:
-            SENSOR_DATA.insert_one(
-                {
-                    "timestamp": datetime.utcnow(),
-                    "prediction": predicted_label,
-                    "confidence": confidence,
-                }
-            )
+            SENSOR_DATA.insert_one({
+                "timestamp": datetime.utcnow(),
+                "prediction": predicted_label,
+                "confidence": confidence,
+            })
 
-        return jsonify({"prediction": predicted_label, "confidence": confidence})
+        return jsonify({
+            "prediction": predicted_label,
+            "confidence": confidence
+        })
 
     except Exception as e:
         logging.exception("❗ Error during prediction")
@@ -112,9 +111,8 @@ def predict_login():
         if not data or "image" not in data:
             return jsonify({"error": "No image provided"}), 400
 
-        image_data = base64.b64decode(
-            data["image"].split(",")[1] if "," in data["image"] else data["image"]
-        )
+        image_data = base64.b64decode(data["image"].split(",")[1] if "," in
+                                      data["image"] else data["image"])
         img = Image.open(BytesIO(image_data)).convert("RGB")
         img = img.resize((100, 100))  # pylint: disable=no-member
         img_array = np.expand_dims(np.array(img) / 255.0, axis=0)
@@ -128,7 +126,10 @@ def predict_login():
         predicted_label = LABELS[top_index]
         confidence = float(prediction[0][top_index])
 
-        return jsonify({"prediction": predicted_label, "confidence": confidence})
+        return jsonify({
+            "prediction": predicted_label,
+            "confidence": confidence
+        })
 
     except Exception as e:
         logging.exception("❗ Error during predict_login")

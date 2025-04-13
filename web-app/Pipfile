@@ -18,6 +18,7 @@ python-dotenv = "*"
 flask-login = "*"
 requests = "*"
 mongomock = "*"
+flask-cors = "*"
 
 [dev-packages]
 

@@ -21,6 +21,7 @@ from flask_login import (
     login_user,
     logout_user,
 )
+from flask_cors import CORS
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
@@ -31,6 +32,7 @@ from werkzeug.security import (
 )
 
 app = Flask(__name__)
+CORS(app)
 
 # Load environment variables from the .env file
 load_dotenv()
@@ -80,9 +82,9 @@ def load_user(user_id):
     """For flask-login use"""
     user_data = users.find_one({"_id": ObjectId(user_id)})
     if user_data:
-        return User(
-            user_id=user_data["_id"], username=user_data["username"], is_active=True
-        )
+        return User(user_id=user_data["_id"],
+                    username=user_data["username"],
+                    is_active=True)
 
     return None
 
