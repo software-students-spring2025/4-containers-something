@@ -7,6 +7,7 @@ Unit testing for the web app code
 from datetime import datetime
 from unittest.mock import patch
 from bson.errors import InvalidId
+from werkzeug.security import generate_password_hash
 import pytest
 from app import app
 
@@ -142,6 +143,25 @@ def test_login_successful(mock_find_one, client_fixture):
     mock_find_one.assert_called_once()
     assert response.status_code == 200
     assert b"Login" in response.data
+
+
+@patch(
+    "app.users.find_one",
+    return_value={
+        "_id": "1234567890",
+        "username": "newusername12345",
+        "password": generate_password_hash("newpassword12345"),
+    },
+)
+def test_login_hashed_password(mock_find_one, client_fixture):
+    """
+    Test the login route to ensure hashed passwords match with user's inputted password
+    """
+    response = client_fixture.post(
+        "/login", data={"username": "newusername12345", "password": "newpassword12345"}
+    )
+    mock_find_one.assert_called_once()
+    assert response.status_code == 302
 
 
 @patch("app.users.find_one", return_value=None)
