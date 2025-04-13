@@ -34,8 +34,8 @@
     <p>Sign a letter from the American Sign Language (ASL) alphabet in front of your camera.</p>
 
     <div class="camera-box">
-      <video id="video" autoplay playsinline></video>
-      <canvas id="canvas" style="display: none;"></canvas>
+      <video id="video" width="100" height="100" autoplay playsinline></video>
+      <canvas id="canvas" width="100" height="100" style="display: none;"></canvas>
     </div>
 
     <button id="capture-btn" class="try-btn">Capture Image</button>
@@ -51,23 +51,24 @@
           <th>Confidence</th>
         </tr>
       </thead>
-      <tbody id="sign-history"></tbody>
-      {% if latest %}
-      {% for item in latest %}
       <tbody id="sign-history">
-        <td>{{ item.timestamp.strftime("%Y-%m-%d %H:%M:%S") }}</td>
-        <td>{{ item.prediction }}</td>
-        <td>{{ item.confidence }}</td>
+        {% if latest %}
+          {% for item in latest %}
+            <tr>
+              <td>{{ item.timestamp.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+              <td>{{ item.prediction }}</td>
+              <td>{{ item.confidence }}</td>
+            </tr>
+          {% endfor %}
+        {% endif %}
       </tbody>
-      {% endfor %}
-      {% endif %}
     </table>
   </section>
 
-  <!-- For fetching user id on the ML client side -->
+  <!-- Hidden user ID -->
   <p id="user_id" style="display: none;">{{ user_id }}</p>
 
-  <!-- Camera and Prediction Script -->
+  <!-- Camera + Prediction Script -->
   <script>
     const video = document.getElementById("video");
     const canvas = document.getElementById("canvas");
@@ -76,10 +77,12 @@
     const signHistory = document.getElementById("sign-history");
     const user_id = document.getElementById("user_id").textContent;
 
-    // Access the user's webcam
     async function startCamera() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { width: 100, height: 100 },
+          audio: false
+        });
         video.srcObject = stream;
       } catch (err) {
         console.error("Error accessing camera: ", err);
@@ -87,20 +90,12 @@
       }
     }
 
-    // Capture an image and send it to the backend for prediction
     captureBtn.addEventListener("click", async () => {
       const ctx = canvas.getContext("2d");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-
-      // Draw the current video frame onto the canvas
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      // Convert the canvas image to a base64 string
+      ctx.drawImage(video, 0, 0, 100, 100);
       const imageData = canvas.toDataURL("image/jpeg");
 
       try {
-        // Send the base64 image to the backend
         const response = await fetch("http://127.0.0.1:5001/predict", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -113,7 +108,6 @@
           const time = new Date().toLocaleTimeString();
           currentSign.textContent = data.prediction;
 
-          // Add the prediction to the signing history
           const row = document.createElement("tr");
           row.innerHTML = `
             <td>${time}</td>
@@ -130,7 +124,6 @@
       }
     });
 
-    // Start the camera when the page loads
     window.onload = startCamera;
   </script>
 </body>
