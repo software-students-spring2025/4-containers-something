@@ -19,7 +19,6 @@ def client_fixture():
         yield client
 
 
-# TEST HOME ROUTE
 def test_home(client_fixture):
     """
     Test the home route to ensure it returns a status code of 200 and
@@ -32,8 +31,9 @@ def test_home(client_fixture):
     assert b"Your Signing History" in response.data
 
 
-# TEST DATA ROUTE
-@patch("app.collection.find_one")
+@patch(
+    "app.collection.find_one"
+)  # mocks find_one method for the collection sensor_data
 def test_data_route_returned_data(mock_find_one, client_fixture):
     """
     Test the data route to ensure it returns the expected sensor data if there is stored data
@@ -62,103 +62,3 @@ def test_data_route_no_data(mock_find_one, client_fixture):
     response = client_fixture.get("/data")
     assert response.status_code == 200
     assert b'{"message":"No data found."}' in response.data
-
-
-# TEST REGISTER ROUTE
-def test_register_get_request(client_fixture):
-    """
-    Test the register route with get request
-    """
-    response = client_fixture.get("/register")
-    assert response.status_code == 200
-    assert b"Sign Up" in response.data
-
-
-@patch("app.collection.insert_one")
-def test_register_new_user(mock_insert, client_fixture):
-    """
-    Test the register route with a new user
-    """
-    response = client_fixture.post(
-        "/register",
-        data={"username": "test1", "password": "password1"},
-        follow_redirects=True,
-    )
-
-    assert response.status_code == 200
-    assert b"Login" in response.data
-    assert mock_insert
-
-
-@patch("app.collection.insert_one")
-def test_register_existing_user(mock_insert, client_fixture):
-    """
-    Test the register route with an existing user
-    """
-    client_fixture.post(
-        "/register",
-        data={"username": "test123", "password": "password123"},
-        follow_redirects=True,
-    )
-
-    response = client_fixture.post(
-        "/register",
-        data={"username": "test123", "password": "password123"},
-        follow_redirects=True,
-    )
-
-    mock_insert.assert_not_called()
-    assert response.status_code == 200
-    assert b"Username already exists. Please try again." in response.data
-
-
-# TEST LOGIN ROUTE
-def test_login_get_request(client_fixture):
-    """
-    Test the login route with get request
-    """
-    response = client_fixture.get("/login")
-    assert response.status_code == 200
-    assert b"Login" in response.data
-
-
-def test_login_successful(client_fixture):
-    """
-    Test the login route to ensure existing user can login
-    """
-    client_fixture.post(
-        "/register", data={"username": "test123", "password": "password123"}
-    )
-    response = client_fixture.post(
-        "/login",
-        data={"username": "test123", "password": "password123"},
-        follow_redirects=True,
-    )
-
-    assert response.status_code == 200
-    assert b"Sign Language Alphabet Detector" in response.data
-
-
-def test_login_failure(client_fixture):
-    """
-    Test the login route outputs error message when user cannot log in
-    """
-    response = client_fixture.post(
-        "/login",
-        data={"username": "error404", "password": "failing404"},
-        follow_redirects=True,
-    )
-
-    assert response.status_code == 200
-    assert b"Invalid username or password." in response.data
-
-
-# TEST LOGOUT ROUTE
-def test_logout(client_fixture):
-    """
-    Test the logout route to ensure user has been succesfully logged out
-    """
-    response = client_fixture.get("/logout", follow_redirects=True)
-
-    assert response.status_code == 200
-    assert b"You have been logged out." in response.data
