@@ -32,7 +32,6 @@ def test_home(client_fixture):
     assert b"Live Detector" in response.data
     assert b"Your Signing History" in response.data
 
-
 @patch(
     "app.collection.find_one"
 )  # mocks find_one method for the collection sensor_data
@@ -79,7 +78,7 @@ def test_register_get_request(client_fixture):
 @patch("app.users.insert_one", return_value=None)
 def test_register_new_user(mock_insert_one, mock_find_one, client_fixture):
     """
-    Test the register route with post request
+    Test the register route with post request and ensures a new user is successfully registered
     """
     response = client_fixture.post(
         "/register", data={"username": "new_registered_user", "password": "new12345"}
@@ -120,14 +119,26 @@ def test_login_get_request(client_fixture):
 )
 def test_login_successful(mock_find_one, client_fixture):
     """
-    Test the login route with post request
+    Test the login route with post request and correct user 
     """
     response = client_fixture.post(
         "/login", data={"username": "username1234", "password": "password1234"}
     )
     mock_find_one.assert_called_once()
     assert response.status_code == 200
+    assert b"Login" in response.data
 
+@patch("app.users.find_one", return_value=None)
+def test_login_failure(mock_find_one, client_fixture):
+    """
+    Test the login route with incorrect login information
+    """
+    response = client_fixture.post(
+        "/login", data={"username": "incorrect_login", "password": "incorrectpw123"}
+    )
+    mock_find_one.assert_called_once()
+    assert response.status_code == 200
+    assert b"Invalid username or password." in response.data
 
 def test_logout(client_fixture):
     """
