@@ -6,6 +6,8 @@ Unit testing for the web app code
 
 from datetime import datetime
 from unittest.mock import patch
+from bson.errors import InvalidId
+from werkzeug.security import generate_password_hash
 import pytest
 from app import app
 
@@ -15,6 +17,8 @@ def client_fixture():
     """
     Create a test client for the Flask application.
     """
+    app.config["TESTING"] = True
+    app.config["SECRET_KEY"] = "testing"
     with app.test_client() as client:
         yield client
 
@@ -29,6 +33,19 @@ def test_home(client_fixture):
     assert b"Sign Language Alphabet Detector" in response.data
     assert b"Live Detector" in response.data
     assert b"Your Signing History" in response.data
+
+
+@patch("bson.ObjectId")
+def test_invalid_id(mock_id, client_fixture):
+    """
+    Test the home route to ensure it returns the home page even with an invalid user id
+    """
+    mock_id.side_effect = InvalidId("wrong_id")
+    response = client_fixture.get("/")
+
+    response = client_fixture.get("/?username=wrongid")
+    assert response.status_code == 200
+    assert b"Sign Language Alphabet Detector" in response.data
 
 
 @patch(
@@ -73,6 +90,32 @@ def test_register_get_request(client_fixture):
     assert b"Sign Up" in response.data
 
 
+@patch("app.users.find_one", return_value=None)
+@patch("app.users.insert_one", return_value=None)
+def test_register_new_user(mock_insert_one, mock_find_one, client_fixture):
+    """
+    Test the register route with post request and ensures a new user is successfully registered
+    """
+    response = client_fixture.post(
+        "/register", data={"username": "new_registered_user", "password": "new12345"}
+    )
+    mock_find_one.assert_called_once_with({"username": "new_registered_user"})
+    mock_insert_one.assert_called_once()
+    assert response.status_code == 302
+
+
+@patch("app.users.find_one", return_value={"username": "already_registered"})
+def test_register_user_exists(mock_find_one, client_fixture):
+    """
+    Test the register route with an existing user
+    """
+    response = client_fixture.post(
+        "/register", data={"username": "already_registered", "password": "anotherpw"}
+    )
+    mock_find_one.assert_called_once_with({"username": "already_registered"})
+    assert response.status_code == 302
+
+
 def test_login_get_request(client_fixture):
     """
     Test the login route with get request
@@ -80,3 +123,63 @@ def test_login_get_request(client_fixture):
     response = client_fixture.get("/login")
     assert response.status_code == 200
     assert b"Login" in response.data
+
+
+@patch(
+    "app.users.find_one",
+    return_value={
+        "_id": "1234567890",
+        "username": "username1234",
+        "password": "password1234",
+    },
+)
+def test_login_successful(mock_find_one, client_fixture):
+    """
+    Test the login route with post request and correct user
+    """
+    response = client_fixture.post(
+        "/login", data={"username": "username1234", "password": "password1234"}
+    )
+    mock_find_one.assert_called_once()
+    assert response.status_code == 200
+    assert b"Login" in response.data
+
+
+@patch(
+    "app.users.find_one",
+    return_value={
+        "_id": "1234567890",
+        "username": "newusername12345",
+        "password": generate_password_hash("newpassword12345"),
+    },
+)
+def test_login_hashed_password(mock_find_one, client_fixture):
+    """
+    Test the login route to ensure hashed passwords match with user's inputted password
+    """
+    response = client_fixture.post(
+        "/login", data={"username": "newusername12345", "password": "newpassword12345"}
+    )
+    mock_find_one.assert_called_once()
+    assert response.status_code == 302
+
+
+@patch("app.users.find_one", return_value=None)
+def test_login_failure(mock_find_one, client_fixture):
+    """
+    Test the login route with incorrect login information
+    """
+    response = client_fixture.post(
+        "/login", data={"username": "incorrect_login", "password": "incorrectpw123"}
+    )
+    mock_find_one.assert_called_once()
+    assert response.status_code == 200
+    assert b"Invalid username or password." in response.data
+
+
+def test_logout(client_fixture):
+    """
+    Test the logout route with get request
+    """
+    response = client_fixture.get("/logout")
+    assert response.status_code == 302

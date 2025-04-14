@@ -86,11 +86,13 @@ def predict():
         confidence = float(prediction[0][top_index])
 
         if SENSOR_DATA is not None:
-            SENSOR_DATA.insert_one({
-                "timestamp": datetime.utcnow(),
-                "prediction": predicted_label,
-                "confidence": confidence,
-            })
+            SENSOR_DATA.insert_one(
+                {
+                    "timestamp": datetime.utcnow(),
+                    "prediction": predicted_label,
+                    "confidence": confidence,
+                }
+            )
 
         return jsonify({
             "prediction": predicted_label,
